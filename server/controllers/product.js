@@ -46,28 +46,39 @@ const getAllProduct = asyncHandler(async(req, res)=>{
 
     // Filtering
     if (queries?.title) formatedQueries.title = { $regex: queries.title, $options: 'i' };
-    
+    let queryCommand =  Product.find(formatedQueries)
     try {
-        // Tìm kiếm sản phẩm theo điều kiện
+        // sorting
         if(req.query.sort){
             const sortBy = req.query.sort.split(',').join(' ')
-            const products = await Product.find(formatedQueries).sort(sortBy);
-            const counts = await Product.countDocuments(formatedQueries);
-            return res.status(200).json({
-                success: true,
-                products: products,
-                counts: counts,
-                });
+            queryCommand.sort(sortBy)
         }
-        else{
-            const products = await Product.find(formatedQueries)
-            const counts = await Product.countDocuments(formatedQueries);
-            return res.status(200).json({
-                success: true,
-                products: products,
-                counts: counts,
-                });
+
+        //filtering
+        if(req.query.fields){
+            const fields = req.query.fields.split(',').join(' ')
+            queryCommand.select(fields)
         }
+
+        //pagination
+        //limit: so object lay ve 1 lan goi API
+        //skip: n, nghia la bo qua n cai dau tien
+        //+2 -> 2
+        //+dgfbcxx -> NaN
+        const page = +req.query.page || 1
+        const limit = +req.query.limit || process.env.LIMIT_PRODUCT
+        const skip = (page-1)*limit
+        queryCommand.skip(skip).limit(limit)
+
+
+        const products = await queryCommand
+        const counts = await Product.countDocuments(formatedQueries);
+        return res.status(200).json({
+            success: true,
+            counts: counts,
+            products: products,
+            });
+        
     } catch (error) {
         // Xử lý lỗi nếu có
         return res.status(500).json({
@@ -98,10 +109,51 @@ const deleteProduct = asyncHandler(async(req, res)=>{
     })
 })
 
+const ratings = asyncHandler(async(req, res)=>{
+    const {_id} = req.user
+    const {star, comment, pid} = req.body
+
+    if(!star || !pid){
+        throw new Error("Missing input")
+    }
+    const ratingProduct = await Product.findById(pid)
+    
+    //alreadyRating tra ve element trong Rating neu co
+    const alreadyRating = ratingProduct?.rating?.find(e1 => e1.postedBy.toString() === _id)
+
+    if(alreadyRating){
+        await Product.updateOne(
+            {rating: {$elemMatch: alreadyRating}},
+            {$set: {"rating.$.star": star, "rating.$.comment": comment}}
+            )
+    }
+    else{
+        await Product.findByIdAndUpdate(
+            pid,
+            {$push:{rating :{star, comment, postedBy: _id}}},
+            {new: true})
+    }
+
+    // Average rating
+    const updatedProduct = await Product.findById(pid)
+    const totalRatings = updatedProduct.rating.length
+    
+    // reduce: 2 doi so (callback + initial value)
+    const totalScores = updatedProduct.rating.reduce((sum,ele) => sum + (+ele.star),0)
+    updatedProduct.totalRatings = Math.round(totalScores/totalRatings)
+    await updatedProduct.save()
+
+    return res.status(200).json({
+        status: true,
+        updatedProduct
+    })
+})
+
 module.exports = {
     createProduct,
     getProduct,
     getAllProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    ratings
 }
