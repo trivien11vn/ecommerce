@@ -8,6 +8,7 @@ import { FaStar } from "react-icons/fa";
 import { FaEye } from "react-icons/fa";
 import { MdMenu } from "react-icons/md";
 import { FaHeart } from "react-icons/fa";
+import { MdArrowForwardIos } from "react-icons/md";
 const icons = {
     FaPhoneAlt,
     MdEmail,
@@ -18,7 +19,8 @@ const icons = {
     FaStar,
     FaEye,
     MdMenu,
-    FaHeart
+    FaHeart,
+    MdArrowForwardIos
 }
 
 export default icons;

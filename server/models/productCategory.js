@@ -8,6 +8,10 @@ var productCategorySchema = new mongoose.Schema({
         unique:true,
         index:true,
     },
+    image:{
+        type:String,
+        required:true,
+    },
     brand:{
         type: Array,
         required:true,

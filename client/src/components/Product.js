@@ -5,12 +5,15 @@ import label_trend from '../assets/label_trending.png'
 import {renderStarfromNumber} from '../ultils/helper'
 import {SelectOption} from './'
 import icons from '../ultils/icon'
+import {Link} from 'react-router-dom'
+import path from '../ultils/path'
 const {FaEye, MdMenu, FaHeart} = icons
 const Product = ({productData, isNew}) => {
   const [isShowOption, setIsShowOption] = useState(false)
   return (
     <div className='w-full text-base px-[10px]'>
-      <div 
+      <Link 
+        to = {`/${path.DETAIL_PRODUCT}/${productData?._id}/${productData.title}`}
         className='w-full border p-[15px] flex flex-col items-center' 
         onMouseEnter = {e => {
           e.stopPropagation();
@@ -33,11 +36,13 @@ const Product = ({productData, isNew}) => {
           <span className='font-bold absolute top-[-12px] left-[-16px] text-white'>{isNew?'New':'Trending'}</span>
         </div>
         <div className='flex flex-col mt-[15px] items-start gap-1 w-full'>
-          <span className='flex h-4'>{renderStarfromNumber(productData?.totalRatings)}</span>
+          <span className='flex h-4'>{renderStarfromNumber(productData?.totalRatings)?.map((el,index)=>(
+            <span key={index}>{el}</span>
+          ))}</span>
           <span className='line-clamp-1'>{productData?.title}</span>
           <span>{`${formatPrice(productData?.price)} VND`}</span>
         </div>
-      </div>
+      </Link>
     </div>
   )
 }
