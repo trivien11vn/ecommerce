@@ -6,7 +6,7 @@ export const appSlice = createSlice({
         categories: null,
         isLoading: false
     },
-    reducer:{
+    reducers:{
         // logout: (state) => {
         //     state.isLoading = false
         // }

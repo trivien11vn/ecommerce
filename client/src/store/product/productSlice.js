@@ -6,7 +6,7 @@ export const productSlice = createSlice({
         newProducts: null,
         errorMessage: ''
     },
-    reducer:{
+    reducers:{
         // logout: (state) => {
         //     state.isLoading = false
         // }

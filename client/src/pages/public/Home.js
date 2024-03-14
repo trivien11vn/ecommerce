@@ -7,6 +7,9 @@ const {MdArrowForwardIos} = icons
 const Home = () => {
     const {newProducts} = useSelector(state => state.product)
     const {categories} = useSelector(state => state.app)
+    const {isLogin, current} = useSelector(state => state.user)
+
+    console.log({isLogin, current})
     return (
         <>
             <div className="w-main flex">
