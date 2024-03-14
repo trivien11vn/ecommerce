@@ -6,7 +6,7 @@ import {useNavigate} from 'react-router-dom'
 import path from "../../ultils/path";
 import { register } from "../../store/user/userSlice";
 import { useDispatch } from 'react-redux';
-
+import { toast} from 'react-toastify'
 
 const Login = () => {
     const navigate = useNavigate()
@@ -25,6 +25,12 @@ const Login = () => {
     const handleForgotPassword = async() =>{
         const response = await apiForgotPassword({email})
         console.log(response)
+        if(response.success){
+            toast.success(response.mes, {theme:"colored"})
+        }
+        else{
+            toast.info(response.mes, {theme: "colored"})
+        }
     }
 
     const resetPayload = () =>{
@@ -70,18 +76,24 @@ const Login = () => {
     },[payload, isRegister])
     return (
         <div className="w-screen h-screen relative">
-            <div className="absolute top-0 left-0 bottom-0 right-0 bg-white flex flex-col items-center py-8 z-50">
+            {isForgotPassword&&
+            <div className="animate-slide-right absolute top-0 left-0 bottom-0 right-0 bg-white flex flex-col items-center py-8 z-50">
                 <div className="flex flex-col gap-4">
                     <label htmlFor="email">Enter your email</label>
                     <input type="text" id="email" placeholder="example@gmail.com" className="pb-2 w-[800px]  border-b outline-none placeholder:text-sm" value={email} onChange={e=>setEmail(e.target.value)}></input>
-                    <div className="flex items-center justify-end">
+                    <div className="flex items-center justify-end gap-4">
+                        <Button 
+                            name='Cancel'
+                            handleOnclick={()=> setIsForgotPassword(false)}
+                        />
                         <Button 
                             name='Submit'
+                            style = 'px-4 py-2 rounded-md text-white bg-blue-500 font-semibold my-2'
                             handleOnclick={handleForgotPassword}
                         />
                     </div>
                 </div>
-            </div>
+            </div>}
             <img src="https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTA4L3Jhd3BpeGVsX29mZmljZV8zM18zZF9pbGx1c3RyYXRpb25fb2ZfYV9uZW9uX2ljb25zX3Nob3BwaW5nX2lzb19hYTQwZTZhNi0xOTk1LTRlMTUtOTJjYy03ZjJlODdlNjkyODNfMS5qcGc.jpg" alt=""
                 className='w-full h-full object-cover'></img>
             <div className="absolute top-0 bottom-0 left-0 right-1/2 flex items-center justify-center">
@@ -123,7 +135,7 @@ const Login = () => {
                 fullWidth
                  />
                 <div className='flex items-center justify-between w-full text-sm'>
-                    {!isRegister && <span className="text-blue-500 hover:underline cursor-pointer">Forget your account?</span>}
+                    {!isRegister && <span className="text-blue-500 hover:underline cursor-pointer" onClick={()=>{setIsForgotPassword(true)}}>Forget your account?</span>}
                     {!isRegister? <span 
                     className="text-blue-500 hover:underline cursor-pointer"
                     onClick={()=>{setIsRegister(true)}}
