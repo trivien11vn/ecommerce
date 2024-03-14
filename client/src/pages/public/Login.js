@@ -1,17 +1,17 @@
 import React ,{useState,useCallback} from "react";
 import {InputField, Button} from '../../components'
-import { apiRegister, apiLogin} from "../../apis/user";
+import { apiRegister, apiLogin, apiForgotPassword} from "../../apis/user";
 import Swal from 'sweetalert2'
-import {useNavigate, useLocation} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import path from "../../ultils/path";
 import { register } from "../../store/user/userSlice";
 import { useDispatch } from 'react-redux';
 
+
 const Login = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const location = useLocation()
-    console.log(location)
+
     const [payload, setPayload] = useState({
         email: '',
         password: '',
@@ -19,7 +19,14 @@ const Login = () => {
         lastName: '',
         mobile: ''
     })
+    const [isForgotPassword, setIsForgotPassword] = useState(false)
     const [isRegister, setIsRegister] = useState(false)
+    const [email, setEmail] = useState('')
+    const handleForgotPassword = async() =>{
+        const response = await apiForgotPassword({email})
+        console.log(response)
+    }
+
     const resetPayload = () =>{
         setPayload({
             email: '',
@@ -63,6 +70,18 @@ const Login = () => {
     },[payload, isRegister])
     return (
         <div className="w-screen h-screen relative">
+            <div className="absolute top-0 left-0 bottom-0 right-0 bg-white flex flex-col items-center py-8 z-50">
+                <div className="flex flex-col gap-4">
+                    <label htmlFor="email">Enter your email</label>
+                    <input type="text" id="email" placeholder="example@gmail.com" className="pb-2 w-[800px]  border-b outline-none placeholder:text-sm" value={email} onChange={e=>setEmail(e.target.value)}></input>
+                    <div className="flex items-center justify-end">
+                        <Button 
+                            name='Submit'
+                            handleOnclick={handleForgotPassword}
+                        />
+                    </div>
+                </div>
+            </div>
             <img src="https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTA4L3Jhd3BpeGVsX29mZmljZV8zM18zZF9pbGx1c3RyYXRpb25fb2ZfYV9uZW9uX2ljb25zX3Nob3BwaW5nX2lzb19hYTQwZTZhNi0xOTk1LTRlMTUtOTJjYy03ZjJlODdlNjkyODNfMS5qcGc.jpg" alt=""
                 className='w-full h-full object-cover'></img>
             <div className="absolute top-0 bottom-0 left-0 right-1/2 flex items-center justify-center">

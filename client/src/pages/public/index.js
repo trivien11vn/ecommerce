@@ -7,3 +7,5 @@ export {default as FAQ} from './FAQ'
 export {default as Service} from './Service'
 export {default as DetailProduct} from './DetailProduct'
 export {default as Final_Register} from './Final_Register'
+export {default as ResetPassword} from './ResetPassword'
+

@@ -56,6 +56,7 @@ const finalRegister = asyncHandler(async(req, res)=>{
     const cookie = req.cookies
     const {token} = req.params
     if(!cookie || cookie?.dataregister?.token !== token){
+        res.clearCookie('dataregister')
         return res.redirect(`${process.env.CLIENT_URL}/final_register/fail`)
     }
     else{
@@ -66,11 +67,13 @@ const finalRegister = asyncHandler(async(req, res)=>{
             firstName: cookie?.dataregister?.firstName,
             lastName: cookie?.dataregister?.lastName,
         })
+
+        res.clearCookie('dataregister')
         if(newUser){
-            return response.redirect(`${process.env.CLIENT_URL}/final_register/success`)
+            return res.redirect(`${process.env.CLIENT_URL}/final_register/success`)
         }
         else{
-            return response.redirect(`${process.env.CLIENT_URL}/final_register/fail`)
+            return res.redirect(`${process.env.CLIENT_URL}/final_register/fail`)
         }
     }
 })
@@ -154,7 +157,7 @@ const logout = asyncHandler(async(req, res) => {
 // Thay doi mat khau
 
 const forgotPassword = asyncHandler(async(req, res)=>{
-    const {email} = req.query
+    const {email} = req.body
     if(!email){
         throw new Error("Missing email")
     }
@@ -166,7 +169,7 @@ const forgotPassword = asyncHandler(async(req, res)=>{
         const resetToken = user.createPasswordResetToken()
         await user.save()
 
-        const html = `Xin vui long click vao link ben duoi de doi mat khau. Link nay se het han sau 15 phut.<a href= ${process.env.URL_SERVER}/api/user/reset_password/${resetToken}>Click here</a>`
+        const html = `Xin vui long click vao link ben duoi de doi mat khau. Link nay se het han sau 15 phut.<a href= ${process.env.CLIENT_URL}/reset_password/${resetToken}>Click here</a>`
 
         const data = {
             email,
