@@ -42,9 +42,9 @@ const Home = () => {
                                 <h4 className="uppercase font-semibold">{el?.title}</h4>
                                 <ul className="text-sm">
                                     {el?.brand?.map(item => (
-                                        <span className="flex items-center gap-1 text-gray-500">
+                                        <span  key={item} className="flex items-center gap-1 text-gray-500">
                                             <MdArrowForwardIos size={14}/> 
-                                            <li key={item}>{item}</li>
+                                            <li>{item}</li>
                                         </span>
                                     ))}
                                 </ul>

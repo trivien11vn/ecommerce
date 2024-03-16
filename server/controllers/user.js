@@ -28,6 +28,7 @@ const makeToken = require('uniqid')
 // })
 
 const register = asyncHandler(async(req, res) => {
+
     const {email, password, firstName, lastName, mobile} = req.body
     if(!email || !password || !firstName || !lastName || !mobile){
         return res.status(400).json({
@@ -41,41 +42,54 @@ const register = asyncHandler(async(req, res) => {
     }
     else{
         const token = makeToken()
-        res.cookie('dataregister', {...req.body, token}, {httpOnly: true, maxAge: 15*60*1000})
-        const html = `Xin vui long click vao link ben duoi de hoan tat dang ky. 
-        Link nay se het han sau 15 phut.<a href= ${process.env.URL_SERVER}/api/user/final_register/${token}>Click here</a>`
-        
-        await sendMail({email, html, subject: 'Complete Registration'})
+        const email_edit = btoa(email) + '@' + token
+        const newUser = await User.create({
+            email:email_edit,password,firstName,lastName,mobile
+        })
+        // res.cookie('dataregister', {...req.body, token}, {httpOnly: true, maxAge: 15*60*1000})
+
+        if(newUser){
+            const html = `<h2>Register code: </h2><br /><blockquote>${token}</blockquote>`
+            await sendMail({email, html, subject: 'Complete Registration'})
+        }
+        setTimeout(async()=>{
+            await User.deleteOne({email: email_edit})
+        },[15*60*1000])
         return res.json({
-            success: true,
-            mes: "Please check your email to active accout!"
+            success: newUser ? true : false,
+            mes: newUser? "Please check your email to active accout!" : "Something went wrong"
         })
     }
 })
 const finalRegister = asyncHandler(async(req, res)=>{
-    const cookie = req.cookies
-    const {token} = req.params
-    if(!cookie || cookie?.dataregister?.token !== token){
-        res.clearCookie('dataregister')
-        return res.redirect(`${process.env.CLIENT_URL}/final_register/fail`)
-    }
-    else{
-        const newUser = await User.create({
-            email: cookie?.dataregister?.email,
-            password: cookie?.dataregister?.password,
-            mobile: cookie?.dataregister?.mobile,
-            firstName: cookie?.dataregister?.firstName,
-            lastName: cookie?.dataregister?.lastName,
-        })
+    //const cookie = req.cookies
 
-        res.clearCookie('dataregister')
-        if(newUser){
-            return res.redirect(`${process.env.CLIENT_URL}/final_register/success`)
-        }
-        else{
-            return res.redirect(`${process.env.CLIENT_URL}/final_register/fail`)
-        }
+    const {token} = req.params
+    const notActiveEmail = await User.findOne({email:new RegExp(`${token}$`)})
+    if(notActiveEmail){
+        notActiveEmail.email = atob(notActiveEmail?.email?.split("@")[0])
+        notActiveEmail.save()
     }
+    return res.json({
+        success: notActiveEmail ? true : false,
+        mes: notActiveEmail? "Successfully" : "Something went wrong"
+    })
+    // const newUser = await User.create({
+    //     email: cookie?.dataregister?.email,
+    //     password: cookie?.dataregister?.password,
+    //     mobile: cookie?.dataregister?.mobile,
+    //     firstName: cookie?.dataregister?.firstName,
+    //     lastName: cookie?.dataregister?.lastName,
+    // })
+
+    // res.clearCookie('dataregister')
+    // if(newUser){
+    //     return res.redirect(`${process.env.CLIENT_URL}/final_register/success`)
+    // }
+    // else{
+    //     return res.redirect(`${process.env.CLIENT_URL}/final_register/fail`)
+    // }
+    
 })
 //Refresh_token => de cap moi access token
 //Access_token => de xac thuc + phan quyen nguoi dung

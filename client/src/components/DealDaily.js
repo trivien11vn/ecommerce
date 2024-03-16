@@ -76,7 +76,9 @@ const DealDaily = () => {
         <img src={dealdaily?.thumb||'https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png'} 
           className='w-full object-contain' alt=''/>
           <span className='line-clamp-1 text-center'>{dealdaily?.title}</span>
-          <span className='flex h-4'>{renderStarfromNumber(dealdaily?.totalRatings, 20)}</span>
+          <span className='flex h-4'>{renderStarfromNumber(dealdaily?.totalRatings, 20)?.map((el, index)=>(
+            <span key={index}> {el} </span>
+          ))}</span>
           <span>{`${formatPrice(dealdaily?.price)} VND`}</span>
         </div>
         <div className='px-4 mt-8'>
