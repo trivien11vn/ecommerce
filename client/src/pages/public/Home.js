@@ -9,10 +9,9 @@ const Home = () => {
     const {categories} = useSelector(state => state.app)
     const {isLogin, current} = useSelector(state => state.user)
 
-    console.log({isLogin, current})
     return (
         <>
-            <div className="w-main flex">
+            <div className="w-main flex mt-6">
             <div className="flex flex-col gap-5 w-[25%] flex-auto">   
                 <Sidebar />
                 <DealDaily></DealDaily>
