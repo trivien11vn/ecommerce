@@ -10,7 +10,6 @@ const {MdLogout} = icons
 const Top_Header = () => {
   const dispatch =  useDispatch()
   const {isLogin, current} = useSelector(state => state.user)
-  console.log(current)
   useEffect(() => {
     if(isLogin){
       dispatch(getCurrent())
