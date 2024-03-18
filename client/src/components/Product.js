@@ -8,7 +8,7 @@ import icons from '../ultils/icon'
 import {Link} from 'react-router-dom'
 import path from '../ultils/path'
 const {FaEye, MdMenu, FaHeart} = icons
-const Product = ({productData, isNew}) => {
+const Product = ({productData, isNew, normal}) => {
   const [isShowOption, setIsShowOption] = useState(false)
   return (
     <div className='w-full text-base px-[10px]'>
@@ -32,7 +32,7 @@ const Product = ({productData, isNew}) => {
           </div>}
           <img src={productData?.thumb||'https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png'} 
           className='w-[243px] h-[243px] object-cover'/>
-          <img src={isNew? label : label_trend} className={`absolute top-[-12px] left-[-25px] ${isNew ? 'w-[70px]' : 'w-[100px]'} h-[25px] object-cover`}></img>
+          {!normal && <img src={isNew? label : label_trend} className={`absolute top-[-12px] left-[-25px] ${isNew ? 'w-[70px]' : 'w-[100px]'} h-[25px] object-cover`}></img>}
           <span className='font-bold absolute top-[-12px] left-[-16px] text-white'>{isNew?'New':'Trending'}</span>
         </div>
         <div className='flex flex-col mt-[15px] items-start gap-1 w-full'>

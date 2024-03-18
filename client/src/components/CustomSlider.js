@@ -8,15 +8,16 @@ const settings = {
     slidesToShow: 3,
     slidesToScroll: 1
   };
-const CustomSlider = ({products, activeTab}) => {
+const CustomSlider = ({products, activeTab, normal}) => {
   return (
     <>
-        {products &&<Slider {...settings}>
+        {products &&<Slider className='custom_slider' {...settings}>
             {products?.map(el =>(
                 <Product key={el._id} 
                     productData={el}
                     isNew={ activeTab === 1 ? false : true}
                     pid= {el.id}
+                    normal={normal}
                 />
             ))}
         </Slider>}

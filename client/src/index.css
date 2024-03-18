@@ -2,16 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-button.slick-next{
+.custom_slider button.slick-next{
     right: 80px;
     z-index: 10;
 }
 
-button.slick-prev{
+.custom_slider button.slick-prev{
     left: 20px;
     z-index:10;
 }
-button.slick-next::before{
+.custom_slider button.slick-next::before{
     color: gray;
     content: '\276F';
     background-color: rgb(243, 193, 193);
@@ -23,7 +23,7 @@ button.slick-next::before{
     align-items: center;
 }
 
-button.slick-prev::before{
+.custom_slider button.slick-prev::before{
     color: gray;
     content: '\276E';
     background-color: rgb(243, 193, 193);;
@@ -35,3 +35,37 @@ button.slick-prev::before{
     align-items: center;
 }
 
+.image_slider button.slick-next{
+    right: 0px;
+    z-index: 10;
+    top:60px;
+}
+
+.image_slider button.slick-prev{
+    left: 0px;
+    z-index:10;
+    top: 60px;
+}
+.image_slider button.slick-next::before{
+    color: gray;
+    content: '\276F';
+    background-color: #ee3131;
+    width: 40px;
+    height: 40px;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image_slider button.slick-prev::before{
+    color: gray;
+    content: '\276E';
+    background-color: #ee3131;
+    width: 40px;
+    height: 40px;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

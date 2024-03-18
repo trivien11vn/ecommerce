@@ -10,6 +10,11 @@ import { MdMenu } from "react-icons/md";
 import { FaHeart } from "react-icons/fa";
 import { MdArrowForwardIos } from "react-icons/md";
 import { MdLogout } from "react-icons/md";
+import { FaShieldHalved } from "react-icons/fa6";
+import { FaTruck } from "react-icons/fa";
+import { FaGift } from "react-icons/fa6";
+import { FaReply } from "react-icons/fa6";
+import { FaTty } from "react-icons/fa6";
 const icons = {
     FaPhoneAlt,
     MdEmail,
@@ -22,7 +27,12 @@ const icons = {
     MdMenu,
     FaHeart,
     MdArrowForwardIos,
-    MdLogout
+    MdLogout,
+    FaShieldHalved,
+    FaTruck,
+    FaGift,
+    FaReply,
+    FaTty
 }
 
 export default icons;

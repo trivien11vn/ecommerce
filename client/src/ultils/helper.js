@@ -48,3 +48,5 @@ export const validate = (payload, setInvalidField) =>{
     // }
     return invalids
 }
+
+export const formatPricee = number => Math.round(number / 1000 ) * 1000;
