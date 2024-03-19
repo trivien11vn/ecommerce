@@ -68,6 +68,10 @@ module.exports = {
       roman: 'upper-roman',
     }
   },
-  plugins: [require("@tailwindcss/line-clamp")],
+  plugins: [require("@tailwindcss/line-clamp"),
+            require('@tailwindcss/forms')({
+              strategy:'class'
+            })
+          ],
   // mode: 'jit',
 }
