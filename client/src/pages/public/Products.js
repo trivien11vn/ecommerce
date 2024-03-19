@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useCallback} from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
-import { Breadcrumb, Product} from '../../components'
+import { Breadcrumb, Product, SearchItem} from '../../components'
 import { apiGetProduct } from '../../apis'
 import Masonry from 'react-masonry-css'
 
@@ -13,6 +13,7 @@ const breakpointColumnsObj = {
 
 const Products = () => {
   const [products, setProducts] = useState(null)
+  const [active, setActive] = useState(null)
   const {category} = useParams()
   const fetchProductCategories = async (queries) =>{
     const response = await apiGetProduct(queries)
@@ -22,7 +23,12 @@ const Products = () => {
     fetchProductCategories()
   }, [])
   
-
+  const changeActive = useCallback((name)=>{
+    if(name===active) setActive(null)
+    else {
+      setActive(name)
+    }
+  },[active])
 
   return (
     <div className='w-full'>
@@ -33,8 +39,12 @@ const Products = () => {
         </div>
       </div>
       <div className='w-main border p-4 flex justify-between m-auto mt-8'>
-        <div className='w-4/5 flex-auto'>
-          filter
+        <div className='w-4/5 flex-auto flex flex-col gap-3'>
+          <span className='font-semibold text-sm'>Filter by:</span>
+          <div className='flex items-center gap-4'>
+          <SearchItem name='price' activeClick={active} changeActiveFilter={changeActive}/>
+          <SearchItem name='color' activeClick={active} changeActiveFilter={changeActive}/>
+          </div>
         </div>
         <div className='w-1/5 flex-auto'>
           short
@@ -44,7 +54,7 @@ const Products = () => {
         <Masonry
           breakpointCols={breakpointColumnsObj}
           className="my-masonry-grid flex mx-[-10px]"
-          columnClassName="my-masonry-grid_column m">
+          columnClassName="my-masonry-grid_column">
           {products?.map(el => (
             <Product 
               key={el.id} 

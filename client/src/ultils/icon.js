@@ -15,6 +15,7 @@ import { FaTruck } from "react-icons/fa";
 import { FaGift } from "react-icons/fa6";
 import { FaReply } from "react-icons/fa6";
 import { FaTty } from "react-icons/fa6";
+import { FaCaretDown } from "react-icons/fa";
 const icons = {
     FaPhoneAlt,
     MdEmail,
@@ -32,7 +33,8 @@ const icons = {
     FaTruck,
     FaGift,
     FaReply,
-    FaTty
+    FaTty,
+    FaCaretDown
 }
 
 export default icons;
