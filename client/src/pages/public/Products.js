@@ -1,8 +1,9 @@
 import React, {useEffect, useState, useCallback} from 'react'
-import { useParams, useSearchParams } from 'react-router-dom'
-import { Breadcrumb, Product, SearchItem} from '../../components'
+import { useParams, useSearchParams, createSearchParams, useNavigate} from 'react-router-dom'
+import { Breadcrumb, Product, SearchItem, InputSelect} from '../../components'
 import { apiGetProduct } from '../../apis'
 import Masonry from 'react-masonry-css'
+import { sorts } from '../../ultils/constant'
 
 const breakpointColumnsObj = {
   default: 4,
@@ -12,16 +13,18 @@ const breakpointColumnsObj = {
 };
 
 const Products = () => {
+  const navigate = useNavigate()
   const [products, setProducts] = useState(null)
   const [active, setActive] = useState(null)
   const [params] = useSearchParams()
-  console.log(params.entries())
+  const [sort, setSort] = useState('')
 
   const {category} = useParams()
   const fetchProductCategories = async (queries) =>{
     const response = await apiGetProduct(queries)
     if(response.success) setProducts(response.products)
   }
+
   useEffect(() => {
     let param = []
     for (let i of params.entries()) param.push(i)
@@ -29,7 +32,16 @@ const Products = () => {
     for(let i of param){
       queries[i[0]] = i[1]
     }
-    fetchProductCategories(queries)
+    let priceQuery = {}
+    if(queries.to || queries.from){
+      priceQuery = {$and: [
+        {price: {gte: queries.from}},
+        {price: {lte: queries.to}},
+      ]}
+      delete queries.from
+      delete queries.to
+    }
+    fetchProductCategories({...priceQuery,...queries})
   }, [params])
   
   const changeActive = useCallback((name)=>{
@@ -39,6 +51,19 @@ const Products = () => {
     }
   },[active])
 
+  const changeValue = useCallback((value)=>{
+    setSort(value)
+  },[sort])
+
+  useEffect(() => {
+    navigate({
+      pathname: `/${category}`,
+      search: createSearchParams({
+        sort
+      }).toString()
+      })    
+  }, [sort])
+  
   return (
     <div className='w-full'>
       <div className='h-[81px] flex items-center justify-center bg-gray-100'>
@@ -55,8 +80,11 @@ const Products = () => {
           <SearchItem name='color' activeClick={active} changeActiveFilter={changeActive}/>
           </div>
         </div>
-        <div className='w-1/5 flex-auto'>
-          short
+        <div className='w-1/5 flex flex-col gap-3'>
+          <span className='font-semibold text-sm'>Sort by:</span>
+          <div className='w-full'> 
+            <InputSelect value={sort} options={sorts} changeValue={changeValue} />
+          </div>
         </div>
       </div>
       <div className='mt-8 w-main m-auto'>

@@ -4,6 +4,7 @@ import { colors } from '../ultils/constant'
 import { createSearchParams, useNavigate, useParams} from 'react-router-dom'
 import path from '../ultils/path'
 import { apiGetProduct } from '../apis'
+import useDebounce from '../hook/useDebounce'
 const {FaCaretDown} = icons
 const SearchItem = ({name, activeClick, changeActiveFilter, type='checkbox'}) => {
   const navigate = useNavigate()
@@ -11,7 +12,10 @@ const SearchItem = ({name, activeClick, changeActiveFilter, type='checkbox'}) =>
   const [selected, setSelected] = useState([])
   const [bestPrice, setBestPrice] = useState(null)
 
-  const [price, setPrice] = useState([0,0])
+  const [price, setPrice] = useState({
+    from:'',
+    to:''
+  })
 
   const handleSelected = (e) => {
     const alreadyEl = selected?.find(el => el === e.target.value)
@@ -33,18 +37,26 @@ const SearchItem = ({name, activeClick, changeActiveFilter, type='checkbox'}) =>
     }
   }, [selected])
   
+
   useEffect(() => {
-    // const validPrice = price.filter(el => +el > 0)
-    // if(price.from > 0){
-    //   navigate({
-    //   pathname: `/${category}`,
-    //   search: createSearchParams({
-    //     color: validPrice
-    //   }).toString()
-    //   })    
-    // }
-    console.log(price)
+    if(price.from > price.to){
+      alert('From cannot be greater than To')
+    }
   }, [price])
+  
+  const deboucePriceFrom = useDebounce(price.from, 500)
+  const deboucePriceTo = useDebounce(price.to, 500)
+  useEffect(() => {
+    console.log(price)
+    const data = {}
+    if(Number(price.from) > 0) data.from = price.from
+    if(Number(price.to) > 0) data.to = price.to  
+    navigate({
+      pathname: `/${category}`,
+      search: createSearchParams(data).toString()
+      })
+
+  }, [deboucePriceFrom, deboucePriceTo])
   
   const fetchHighestPrice = async() =>{
     const response = await apiGetProduct({sort:'-price', limit:1})
@@ -52,6 +64,8 @@ const SearchItem = ({name, activeClick, changeActiveFilter, type='checkbox'}) =>
       setBestPrice(response.products[0]?.price)
     }
   }
+
+
   //goi 1 lan duy nhat thoi
   useEffect(() => { 
     if(type==='input') fetchHighestPrice()
@@ -72,7 +86,9 @@ const SearchItem = ({name, activeClick, changeActiveFilter, type='checkbox'}) =>
                   </span>
                   <span onClick={e=>{
                     e.stopPropagation() 
-                    setSelected([])}} className='cursor-pointer underline hover:text-main'>Reset</span>
+                    setSelected([])
+                    changeActiveFilter(null)
+                    }} className='cursor-pointer underline hover:text-main'>Reset</span>
                 </div>
                 <div onClick={e=> e.stopPropagation()} className='flex flex-col gap-3 mt-4'>
                 {
@@ -94,7 +110,9 @@ const SearchItem = ({name, activeClick, changeActiveFilter, type='checkbox'}) =>
                   </span>
                   <span onClick={e=>{
                     e.stopPropagation() 
-                    setSelected([])}} className='cursor-pointer underline hover:text-main'>Reset</span>
+                    setPrice({from:'',to:''})
+                    changeActiveFilter(null)
+                    }} className='cursor-pointer underline hover:text-main'>Reset</span>
                 </div>
                 <div className='flex items-center p-2 gap-2'>
                   <div className='flex items-center gap-2'>
@@ -103,8 +121,8 @@ const SearchItem = ({name, activeClick, changeActiveFilter, type='checkbox'}) =>
                       className='form-input' 
                       type="number" 
                       id="From"
-                      value={price[0]}
-                      onChange={e=> setPrice(prev => prev.map((el,index) =>  index === 0 ? e.target.value : el))}
+                      value={price.from}
+                      onChange={e=> setPrice(prev => ({...prev, from: e.target.value}))}
                     />
                   </div>
                   <div className='flex items-center gap-2'>
@@ -113,8 +131,8 @@ const SearchItem = ({name, activeClick, changeActiveFilter, type='checkbox'}) =>
                       className='form-input' 
                       type="number" 
                       id="To"
-                      value={price[1]}
-                      onChange={e=> setPrice(prev => prev.map((el,index) =>  index === 1 ? e.target.value : el))}
+                      value={price.to}
+                      onChange={e=> setPrice(prev => ({...prev, to: e.target.value}))}
                     />
                   </div>
                 </div>
