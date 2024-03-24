@@ -131,14 +131,12 @@ const Login = () => {
                     <input type="text" id="email" placeholder="example@gmail.com" className="pb-2 w-[800px]  border-b outline-none placeholder:text-sm" value={email} onChange={e=>setEmail(e.target.value)}></input>
                     <div className="flex items-center justify-end gap-4">
                         <Button 
-                            name='Cancel'
                             handleOnclick={()=> setIsForgotPassword(false)}
-                        />
+                        >Cancel</Button>
                         <Button 
-                            name='Submit'
                             style = 'px-4 py-2 rounded-md text-white bg-blue-500 font-semibold my-2'
                             handleOnclick={handleForgotPassword}
-                        />
+                        >Submit</Button>
                     </div>
                 </div>
             </div>}
@@ -188,10 +186,11 @@ const Login = () => {
                 setInvalidField={setInvalidField}
                 />
                 <Button 
-                name= {isRegister? 'Register' : 'Login'}
                 handleOnclick={handleSubmit}
                 fullWidth
-                 />
+                >
+                    {isRegister? 'Register' : 'Login'}
+                </Button>
                 <div className='flex items-center justify-between w-full text-sm'>
                     {!isRegister && <span className="text-blue-500 hover:underline cursor-pointer" onClick={()=>{setIsForgotPassword(true)}}>Forget your account?</span>}
                     {!isRegister? <span 

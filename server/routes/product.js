@@ -5,7 +5,7 @@ const {verifyAccessToken, isAdmin} = require('../middlewares/verify_token')
 
 router.post('/', [verifyAccessToken, isAdmin], ctrls.createProduct)
 router.get('/', ctrls.getAllProduct)
-router.put('/', [verifyAccessToken], ctrls.ratings)
+router.put('/ratings', [verifyAccessToken], ctrls.ratings)
 
 router.put('/upload_image/:pid', [verifyAccessToken, isAdmin],uploader.array('images', 10), ctrls.uploadImage)
 router.get('/:pid', ctrls.getProduct)

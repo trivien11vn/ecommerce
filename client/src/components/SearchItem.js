@@ -39,7 +39,7 @@ const SearchItem = ({name, activeClick, changeActiveFilter, type='checkbox'}) =>
   
 
   useEffect(() => {
-    if(price.from > price.to){
+    if(Number(price.from) > Number(price.to)){
       alert('From cannot be greater than To')
     }
   }, [price])

@@ -21,10 +21,19 @@ const DetailProduct = () => {
   const [product, setProduct] = useState(null)
   const [quantity, setQuantity] = useState(1)
   const [productCate, setProductCate] = useState(null)
+
+  const [currentImage, setCurrentImage] = useState(null)
+
+  const [update, setUpdate] = useState(false)
+  const reRender = useCallback(() => {
+      setUpdate(!update)
+  },[update])
+
   const fetchProductData = async ()=>{
     const response = await apiGetOneProduct(pid)
     if(response.success){
-      setProduct(response.product)
+      setProduct(response?.product)
+      setCurrentImage(response?.product?.thumb)
     }
   }
   const fetchProductCate = async ()=>{
@@ -38,8 +47,19 @@ const DetailProduct = () => {
       fetchProductData()
       fetchProductCate()
     }
+    window.scrollTo(0,0)
   }, [pid])
+  useEffect(() => {
+    if(pid){
+      fetchProductData()
+    }
+  }, [update])
   
+  const handleClickImage = (e,el) => {
+    e.stopPropagation();
+    setCurrentImage(el)
+  }
+
   const editQuantity = useCallback((number)=>{
     if(!Number(number)||Number(number)<1) {
       return
@@ -66,15 +86,15 @@ const DetailProduct = () => {
       </div>
       <div className='w-main m-auto mt-4 flex'>
         <div className='flex flex-col gap-4 w-2/5'>
-          <div className='h-[458px] w-[458px] border'>
+          <div className='h-[458px] w-[458px] border overflow-hidden'>
             <ReactImageMagnify {...{
               smallImage: {
                   alt: 'Wristwatch by Ted Baker London',
                   isFluidWidth: true,
-                  src: product?.thumb
+                  src: currentImage
               },
               largeImage: {
-                  src: product?.thumb,
+                  src: currentImage,
                   width: 1200,
                   height: 1200
               }
@@ -85,7 +105,7 @@ const DetailProduct = () => {
             <Slider className='image_slider flex gap-2'{...settings}>
               {product?.image?.map(el => (
                 <div key={el}>
-                  <img src={el} alt="sup_product" className='border h-[141px] w-[141px] object-cover'/>
+                  <img onClick={e=> handleClickImage(e,el)} src={el} alt="sup_product" className='cursor-pointer border h-[141px] w-[141px] object-cover'/>
                 </div>
               ))}
             </Slider>
@@ -97,7 +117,7 @@ const DetailProduct = () => {
               {`${formatPrice(formatPricee(product?.price))} VNĐ`}
             </h2>
             <span className='text-sm text-main'> 
-              {`Kho: ${product?.quantity}`}
+              {`In stock: ${product?.quantity}`}
             </span>
           </div>
           <div className='flex items-center gap-1'>
@@ -105,7 +125,7 @@ const DetailProduct = () => {
               <span key={index}>{el}</span>
             ))}
             <span className='text-sm text-main'>
-              {`(Đã bán: ${product?.soldQuantity})`}
+              {`(Sold: ${product?.soldQuantity})`}
             </span>
           </div>
           <ul className='text-sm text-gray-500 list-square pl-4'>
@@ -130,7 +150,7 @@ const DetailProduct = () => {
         </div>
       </div>
       <div className='w-main m-auto mt-[8px]'>
-        <ProductInformation />
+        <ProductInformation ratings={product?.rating} totalRatings={product?.totalRatings} nameProduct={product?.title} pid={product?._id} reRender={reRender}/>
       </div>
       <div className='w-main m-auto mt-[8px]'>
         <h3 className='text-[20px] font-semibold py-[15px] border-b-2 border-main'>OTHER CUSTOMERS ALSO BUY:</h3>
