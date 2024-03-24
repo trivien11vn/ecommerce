@@ -9,6 +9,7 @@ export const formatPrice = number => Number(number?.toFixed(1)).toLocaleString()
 export const renderStarfromNumber = (number, size) => {
     if(!Number(number)) return 
     const rating = []
+    number = Math.round(number)
     for (let i = 0; i < +number; i++){
         rating.push(<FaStar color='orange' size= {size||16}/>)
     }

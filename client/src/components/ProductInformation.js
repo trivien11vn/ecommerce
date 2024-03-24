@@ -1,6 +1,6 @@
 import React, { memo,useState,useCallback} from 'react'
 import {tabs} from '../ultils/constant'
-import {VoteBar, Button, VoteOption} from './index'
+import {VoteBar, Button, VoteOption, Comment} from './index'
 import { renderStarfromNumber } from '../ultils/helper'
 import { apiRatings } from '../apis'
 import { useDispatch, useSelector } from 'react-redux'
@@ -23,7 +23,7 @@ const ProductInformation = ({totalRatings, ratings, nameProduct, pid, reRender})
             alert('Missing input. Please rating again!')
             return
         }
-        await apiRatings({star:score, comment, pid})
+        await apiRatings({star:score, comment, pid, updatedAt:Date.now() })
         dispatch(showModal({isShowModal:false, modalChildren: null}))
         reRender()
     }
@@ -62,37 +62,42 @@ const ProductInformation = ({totalRatings, ratings, nameProduct, pid, reRender})
                     {el.name}
                 </span>
             ))}
-                <div 
-                    onClick={()=>{setActiveTab(5)}}
-                    className={`p-2 px-4 cursor-pointer ${activeTab=== 5 ? 'bg-white border border-b-0': 'bg-gray-200'}`}>
-                    REVIEW
-                </div>
         </div>
         <div className='w-full border p-4'>
             {tabs.some(el => el.id === activeTab) && tabs[activeTab-1]?.content}
-            {activeTab === 5 && 
-            <div className='flex p-4 flex-col'>
-                <div className='flex'>
-                <div className='flex-4 flex flex-col items-center justify-center border-red-200 border'>
-                    <span className='font-semibold text-3xl'>{`${totalRatings}/5`}</span>
-                    <span className='flex items-center gap-1'>{renderStarfromNumber(totalRatings)?.map((el,index) => (
-                        <span key={index}>{el}</span>
-                    ))}</span>
-                    <span className='text-sm'>{`${ratings?.length} reviewers`}</span>
-                </div>
-                <div className='flex-6 border flex flex-col gap-2 order p-4'>
-                    {Array.from(Array(5).keys()).reverse().map(el=>(
-                        <VoteBar key={el} number={el+1} totalCount={ratings?.length} count={ratings?.filter(i => i.star === el+1)?.length}/>
-                    ))}
-                </div>
-                </div>
-                <div className='p-4 flex items-center justify-center text-sm flex-col gap-2'>
-                    <span>Do you review this product?</span>
-                    <Button handleOnclick={handleVoteNow}>Rate now!</Button>
-                </div>
-            </div>}
+           
         </div>
-        
+        <div className='flex py-8 flex-col w-main'>
+            <div className='flex border'>
+            <div className='flex-4 flex flex-col items-center justify-center '>
+                <span className='font-semibold text-3xl'>{`${totalRatings}/5`}</span>
+                <span className='flex items-center gap-1'>{renderStarfromNumber(totalRatings)?.map((el,index) => (
+                    <span key={index}>{el}</span>
+                ))}</span>
+                <span className='text-sm'>{`${ratings?.length} reviewers`}</span>
+            </div>
+            <div className='flex-6 flex flex-col gap-2 order p-4'>
+                {Array.from(Array(5).keys()).reverse().map(el=>(
+                    <VoteBar key={el} number={el+1} totalCount={ratings?.length} count={ratings?.filter(i => i.star === el+1)?.length}/>
+                ))}
+            </div>
+            </div>
+            <div className='p-4 flex items-center justify-center text-sm flex-col gap-2'>
+                <span>Do you review this product?</span>
+                <Button handleOnclick={handleVoteNow}>Rate now!</Button>
+            </div>
+            <div className='flex flex-col gap-4'>
+                {ratings?.map(el=>(
+                    <Comment 
+                        key = {el._id}
+                        star = {el.star}
+                        updatedAt = {el.updatedAt}
+                        comment = {el.comment}
+                        name={`${el.postedBy.lastName} ${el.postedBy.firstName}`}c
+                    />
+                ))}
+            </div>
+        </div>
     </div>
   )
 }

@@ -11,8 +11,13 @@ const Top_Header = () => {
   const dispatch =  useDispatch()
   const {isLogin, current} = useSelector(state => state.user)
   useEffect(() => {
-    if(isLogin){
-      dispatch(getCurrent())
+    const setTimeoutId = setTimeout(()=>{
+      if(isLogin){
+        dispatch(getCurrent())
+      }
+    },300)
+    return () =>{
+      clearTimeout(setTimeoutId)
     }
   }, [dispatch, isLogin])
   
