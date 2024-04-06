@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useCallback} from 'react'
 import { useParams, useSearchParams, createSearchParams, useNavigate} from 'react-router-dom'
-import { Breadcrumb, Product, SearchItem, InputSelect} from '../../components'
+import { Breadcrumb, Product, SearchItem, InputSelect, Pagination} from '../../components'
 import { apiGetProduct } from '../../apis'
 import Masonry from 'react-masonry-css'
 import { sorts } from '../../ultils/constant'
@@ -22,26 +22,33 @@ const Products = () => {
   const {category} = useParams()
   const fetchProductCategories = async (queries) =>{
     const response = await apiGetProduct(queries)
-    if(response.success) setProducts(response.products)
+    if(response.success) setProducts(response)
   }
 
   useEffect(() => {
     let param = []
     for (let i of params.entries()) param.push(i)
     const queries = {}
+    let priceQuery =  {}
     for(let i of param){
       queries[i[0]] = i[1]
     }
-    let priceQuery = {}
-    if(queries.to || queries.from){
+    if(queries.to && queries.from){
       priceQuery = {$and: [
         {price: {gte: queries.from}},
         {price: {lte: queries.to}},
       ]}
-      delete queries.from
-      delete queries.to
+      delete queries.price
     }
-    fetchProductCategories({...priceQuery,...queries})
+    else{
+      if(queries.from) queries.price = {gte:queries.from}
+      if(queries.to) queries.price = {gte:queries.to}
+    }
+    delete queries.from
+    delete queries.to
+    const q = {...priceQuery, ...queries}
+    fetchProductCategories(q)
+    window.scrollTo(0,0)
   }, [params])
   
   const changeActive = useCallback((name)=>{
@@ -56,12 +63,14 @@ const Products = () => {
   },[sort])
 
   useEffect(() => {
-    navigate({
+    if(sort){
+      navigate({
       pathname: `/${category}`,
       search: createSearchParams({
         sort
       }).toString()
-      })    
+      }) 
+    }   
   }, [sort])
   
   return (
@@ -92,7 +101,7 @@ const Products = () => {
           breakpointCols={breakpointColumnsObj}
           className="my-masonry-grid flex mx-[-10px]"
           columnClassName="my-masonry-grid_column">
-          {products?.map(el => (
+          {products?.products?.map(el => (
             <Product 
               key={el._id} 
               productData={el}
@@ -101,6 +110,11 @@ const Products = () => {
             />
           ))}
         </Masonry>
+      </div>
+      <div className='w-main m-auto my-4 flex justify-end'>
+       {products&&
+       <Pagination 
+       totalCount={products?.counts}/>}
       </div>
       <div className='w-full h-[500px]'>
       </div>
