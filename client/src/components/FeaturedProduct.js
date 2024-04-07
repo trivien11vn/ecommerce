@@ -6,7 +6,6 @@ const FeaturedProduct = () => {
     const fetchProduct = async ()=>{
         const response = await apiGetProduct({limit:9})
         if(response.success){
-            console.log(response)
             setProduct(response.products)
         }
     }

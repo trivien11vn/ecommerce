@@ -125,7 +125,7 @@ const login = asyncHandler(async(req, res)=>{
 
 const getOneUser = asyncHandler(async(req, res)=>{
     const {_id} = req.user
-    const user = await User.findById({_id}).select('-refresh_token -password -role')
+    const user = await User.findById({_id}).select('-refresh_token -password')
     return res.status(200).json({
         success: user? true : false,
         res: user? user : "User not found"
