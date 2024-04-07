@@ -1,15 +1,17 @@
 import React,{useEffect, memo} from 'react'
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import path from '../ultils/path'
 import { getCurrent } from '../store/user/asyncAction'
 import { useDispatch, useSelector} from 'react-redux'
 import icons from '../ultils/icon'
-import { logout } from '../store/user/userSlice'
+import { logout, clearMessage } from '../store/user/userSlice'
+import Swal from 'sweetalert2'
 
 const {MdLogout} = icons
 const Top_Header = () => {
   const dispatch =  useDispatch()
-  const {isLogin, current} = useSelector(state => state.user)
+  const navigate = useNavigate()
+  const {isLogin, current, mes} = useSelector(state => state.user)
   useEffect(() => {
     const setTimeoutId = setTimeout(()=>{
       if(isLogin){
@@ -20,12 +22,21 @@ const Top_Header = () => {
       clearTimeout(setTimeoutId)
     }
   }, [dispatch, isLogin])
+
+  useEffect(() => {
+    if(mes) Swal.fire('Oops!', mes, 'info').then(()=>{
+      dispatch(clearMessage())
+      navigate(`/${path.LOGIN}`)
+    })
+  }, [mes])
+  
   
   return (
     <div className='h-[38px] w-full bg-main flex items-center justify-center'>
         <div className='w-main flex items-center justify-between text-xs text-white'>
             <span className=''>ORDER ONLINE OR CALL US (+1800) 000 8808</span>
-            {isLogin?
+            {isLogin && current
+            ?
             <div className='flex gap-4 text-sm items-center'>
               <span>
                 {`Hello, ${current?.lastName} ${current?.firstName}`}

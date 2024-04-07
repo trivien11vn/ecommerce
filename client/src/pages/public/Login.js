@@ -7,7 +7,7 @@ import path from "../../ultils/path";
 import { login } from "../../store/user/userSlice";
 import { useDispatch } from 'react-redux';
 import { toast} from 'react-toastify'
-import { validate } from "../../ultils/helper";
+import { validate } from "ultils/helper";
 
 const Login = () => {
     const navigate = useNavigate()
