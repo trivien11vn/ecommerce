@@ -16,6 +16,12 @@ import { FaGift } from "react-icons/fa6";
 import { FaReply } from "react-icons/fa6";
 import { FaTty } from "react-icons/fa6";
 import { FaCaretDown } from "react-icons/fa";
+import { AiTwotoneDashboard } from "react-icons/ai";
+import { MdGroups } from "react-icons/md";
+import { MdOutlineProductionQuantityLimits } from "react-icons/md";
+import { RiBillLine } from "react-icons/ri";
+import { FaCaretRight } from "react-icons/fa";
+import { RiDashboard3Line } from "react-icons/ri";
 const icons = {
     FaPhoneAlt,
     MdEmail,
@@ -34,7 +40,13 @@ const icons = {
     FaGift,
     FaReply,
     FaTty,
-    FaCaretDown
+    FaCaretDown,
+    AiTwotoneDashboard,
+    MdGroups,
+    MdOutlineProductionQuantityLimits,
+    RiBillLine,
+    FaCaretRight,
+    RiDashboard3Line
 }
 
 export default icons;

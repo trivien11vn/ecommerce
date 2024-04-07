@@ -1,7 +1,7 @@
 import React, {useState, useEffect, memo} from 'react'
-import {apiGetProduct} from '../apis/product'
-import {Product, CustomSlider} from './'
-import {getNewProducts} from '../store/product/asyncAction'
+import {apiGetProduct} from 'apis/product'
+import {Product, CustomSlider} from '../'
+import {getNewProducts} from 'store/product/asyncAction'
 import { useDispatch, useSelector} from 'react-redux'
 const tabs = [
     {

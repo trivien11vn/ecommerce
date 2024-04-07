@@ -194,3 +194,45 @@ export const voteOptions = [
         text: 'Perfect'
     },
 ]
+
+const {RiDashboard3Line, MdGroups, MdOutlineProductionQuantityLimits, RiBillLine} = icons
+export const adminSidebar = [
+    {
+        id: 1,
+        type: 'single',
+        text: 'Dashboard',
+        path: `/${path.ADMIN}/${path.DASHBOARD}`,
+        icon: <RiDashboard3Line size={20}/>
+    },
+    {
+        id: 2,
+        type: 'single',
+        text: 'Manage user',
+        path: `/${path.ADMIN}/${path.MANAGE_USER}`,
+        icon: <MdGroups size={20}/>
+    },
+    {
+        id: 3,
+        type: 'parent',
+        text: 'Manage product',
+        submenu:[
+            {
+                text: 'Create Product',
+                path: `/${path.ADMIN}/${path.CREATE_PRODUCT}`
+            },
+            {
+                text: 'Manage Product',
+                path: `/${path.ADMIN}/${path.MANAGE_PRODUCT}`
+            }
+        ],
+        icon: <MdOutlineProductionQuantityLimits size={20}/>
+    },
+    {
+        id: 4,
+        type: 'single',
+        text: 'Manage order',
+        path: `/${path.ADMIN}/${path.MANAGE_ORDER}`,
+        icon: <RiBillLine size={20}/>
+    },
+
+]

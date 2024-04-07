@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 const Banner = () => {
     return (
         <div className="w-full">
@@ -9,4 +9,4 @@ const Banner = () => {
     )
 }
 
-export default Banner
+export default memo(Banner)

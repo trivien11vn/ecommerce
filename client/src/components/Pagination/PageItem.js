@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {memo, useEffect} from 'react'
 import clsx from 'clsx'
 import { useSearchParams, useNavigate, useParams, createSearchParams} from 'react-router-dom'
 
@@ -31,4 +31,4 @@ const PageItem = ({children}) => {
   )
 }
 
-export default PageItem
+export default memo(PageItem)

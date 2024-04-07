@@ -1,5 +1,5 @@
-import React from 'react'
-import icons from '../ultils/icon'
+import React, { memo } from 'react'
+import icons from '../../ultils/icon'
 const Footer = () => {
   const {MdEmail} = icons
   return (
@@ -62,4 +62,4 @@ const Footer = () => {
   )
 }
 
-export default Footer
+export default memo(Footer)

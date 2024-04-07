@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react' 
-import {ProductCard} from './'
-import {apiGetProduct} from '../apis'
+import React, {useState, useEffect, memo} from 'react' 
+import {ProductCard} from '../index'
+import {apiGetProduct} from 'apis'
 const FeaturedProduct = () => {
     const [product, setProduct] = useState(null)
     const fetchProduct = async ()=>{
@@ -48,4 +48,4 @@ const FeaturedProduct = () => {
   )
 }
 
-export default FeaturedProduct
+export default memo(FeaturedProduct)

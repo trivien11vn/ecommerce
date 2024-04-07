@@ -1,8 +1,8 @@
-import React,{Fragment} from "react";
-import logo from "../../src/assets/logo_digital_new_250x.png"
-import icons from '../ultils/icon'
+import React,{Fragment, memo} from "react";
+import logo from "assets/logo_digital_new_250x.png"
+import icons from 'ultils/icon'
 import {Link} from 'react-router-dom'
-import path from '../ultils/path'
+import path from 'ultils/path'
 import { useSelector } from 'react-redux'
 
 const {FaPhoneAlt, MdEmail, FaUser, FaShoppingBag} = icons
@@ -48,4 +48,4 @@ const Header = () => {
     )
 }
 
-export default Header
+export default memo(Header)

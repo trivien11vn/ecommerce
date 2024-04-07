@@ -1,12 +1,12 @@
-import React, {useState}from 'react'
-import {formatPrice} from '../ultils/helper'
-import label from '../assets/label.png'
-import label_trend from '../assets/label_trending.png'
-import {renderStarfromNumber} from '../ultils/helper'
-import {SelectOption} from './'
-import icons from '../ultils/icon'
+import React, {memo, useState}from 'react'
+import {formatPrice} from 'ultils/helper'
+import label from 'assets/label.png'
+import label_trend from 'assets/label_trending.png'
+import {renderStarfromNumber} from 'ultils/helper'
+import {SelectOption} from '../index'
+import icons from 'ultils/icon'
 import {Link} from 'react-router-dom'
-import path from '../ultils/path'
+import path from 'ultils/path'
 const {FaEye, MdMenu, FaHeart} = icons
 const Product = ({productData, isNew, normal}) => {
   const [isShowOption, setIsShowOption] = useState(false)
@@ -47,4 +47,4 @@ const Product = ({productData, isNew, normal}) => {
   )
 }
 
-export default Product
+export default memo(Product)

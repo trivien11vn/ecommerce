@@ -1,10 +1,10 @@
 import React, { memo, useEffect, useState} from 'react'
-import icons from '../ultils/icon'
-import { colors } from '../ultils/constant'
+import icons from '../../ultils/icon'
+import { colors } from '../../ultils/constant'
 import { createSearchParams, useNavigate, useParams, useSearchParams} from 'react-router-dom'
-import path from '../ultils/path'
-import { apiGetProduct } from '../apis'
-import useDebounce from '../hook/useDebounce'
+import path from '../../ultils/path'
+import { apiGetProduct } from '../../apis'
+import useDebounce from '../../hook/useDebounce'
 const {FaCaretDown} = icons
 const SearchItem = ({name, activeClick, changeActiveFilter, type='checkbox'}) => {
   const navigate = useNavigate()

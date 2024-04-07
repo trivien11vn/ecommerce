@@ -1,8 +1,8 @@
 import React, { memo, useRef, useEffect, useState} from 'react'
-import logo_digital_new_250x from '../assets/logo_digital_new_250x.png'
-import { voteOptions } from '../ultils/constant'
-import icons from '../ultils/icon'
-import {Button} from './'
+import logo_digital_new_250x from 'assets/logo_digital_new_250x.png'
+import { voteOptions } from 'ultils/constant'
+import icons from 'ultils/icon'
+import {Button} from 'components'
 
 const {FaStar} = icons
 const VoteOption = ({nameProduct, handleSubmitVoteOption}) => {

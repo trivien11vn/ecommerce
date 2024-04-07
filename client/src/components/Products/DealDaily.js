@@ -1,8 +1,8 @@
 import React, {useEffect, useState, memo} from 'react'
-import icons from '../ultils/icon'
-import {apiGetProduct} from '../apis/product'
-import {renderStarfromNumber, formatPrice} from '../ultils/helper'
-import {Countdown} from './'
+import icons from 'ultils/icon'
+import {apiGetProduct} from 'apis/product'
+import {renderStarfromNumber, formatPrice} from 'ultils/helper'
+import {Countdown} from '../index'
 import { min } from 'moment/moment'
 const {FaStar, MdMenu} = icons
 let idInterval 
