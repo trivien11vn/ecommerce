@@ -242,6 +242,14 @@ const getAllUsers = asyncHandler(async (req, res) => {
     const formatedQueries = JSON.parse(queryString);
     // Filtering
     if (queries?.name) formatedQueries.name = { $regex: queries.name, $options: 'i' };  
+    if (req.query.q){
+        delete formatedQueries.q
+        formatedQueries['$or'] = [
+            {firstName : { $regex: req.query.q, $options: 'i' }},
+            {lastName : { $regex: req.query.q, $options: 'i' }},
+            {email : { $regex: req.query.q, $options: 'i' }},
+        ]
+    }
     let queryCommand =  User.find(formatedQueries)
     try {
         // sorting
@@ -255,7 +263,6 @@ const getAllUsers = asyncHandler(async (req, res) => {
             const fields = req.query.fields.split(',').join(' ')
             queryCommand.select(fields)
         }
-
         //pagination
         //limit: so object lay ve 1 lan goi API
         //skip: n, nghia la bo qua n cai dau tien

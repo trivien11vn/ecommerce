@@ -1,18 +1,30 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback} from 'react'
 import { apiUsers } from 'apis/user'
 import { roles } from 'ultils/constant'
 import moment from 'moment'
+import { InputField, Pagination } from 'components'
+import useDebounce from 'hook/useDebounce'
+import { useSearchParams} from 'react-router-dom'
+
 const ManageUser = () => {
   const [user, setUser] = useState(null)
+  const [query, setQuery] = useState({
+    q: ''
+  })
+  const [params] = useSearchParams()
   const fetchUsers = async(params) => {
-    const response = await apiUsers(params)
+    const response = await apiUsers({...params, limit:process.env.REACT_APP_LIMIT})
     if(response.success){
       setUser(response)
     }
   }
+  
+  const queriesDebounce = useDebounce(query.q,800)
   useEffect(() => {
-    fetchUsers()
-  }, [])
+    const queries = Object.fromEntries([...params]) 
+    if(queriesDebounce) queries.q = queriesDebounce
+    fetchUsers(queries)
+  }, [queriesDebounce, params])
   
   return (
     <div className='w-full'>
@@ -20,6 +32,17 @@ const ManageUser = () => {
         <span>Manage Users</span>
       </h1>
       <div className='w-full p-4'>
+        <div className='flex justify-end py-4'>
+          <InputField 
+            nameKey={'q'}
+            value={query?.q}
+            setValue = {setQuery}
+            style = {'w400'}
+            placeholder= 'Search user name or email address'
+            isHideLabel={true}
+          />
+        </div>
+
         <table className='table-auto mb-6 text-left w-full'>
           <thead className='font-bold bg-blue-500 text-[13px] text-white'>
            <tr className='border border-gray-500'>
@@ -51,6 +74,11 @@ const ManageUser = () => {
             ))}
           </tbody>
         </table>
+        <div className='w-full text-right'>
+          <Pagination
+            totalCount={user?.counts}
+          />
+        </div>
       </div>
     </div>
   )

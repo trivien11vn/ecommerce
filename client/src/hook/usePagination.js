@@ -9,9 +9,8 @@ import { generateRange } from '../ultils/helper'
 import { HiDotsHorizontal } from "react-icons/hi";
 
 const usePagination = (totalCount, currentPage, siblingCount = 1) => {
-    console.log(totalCount, currentPage)
     const paginationArray = useMemo(() => {
-        const pageSize = process.env.REACT_APP_PRODUCT_LIMIT||10
+        const pageSize = process.env.REACT_APP_LIMIT||10
         const pagination = Math.ceil(totalCount / pageSize)
 
         const paginationItem = siblingCount + 5

@@ -1,5 +1,5 @@
 import React,{Fragment, memo} from "react";
-import logo from "assets/logo_digital_new_250x.png"
+import logo from "assets/logo_black.png"
 import icons from 'ultils/icon'
 import {Link} from 'react-router-dom'
 import path from 'ultils/path'
