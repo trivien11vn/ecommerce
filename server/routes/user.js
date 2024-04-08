@@ -3,6 +3,7 @@ const ctrls = require('../controllers/user')
 const {verifyAccessToken, isAdmin} = require('../middlewares/verify_token')
 
 router.post('/register', ctrls.register)
+router.post('/mock', ctrls.createUsers)
 router.put('/final_register/:token', ctrls.finalRegister)
 router.post('/login', ctrls.login)
 router.get('/current', verifyAccessToken, ctrls.getOneUser)
