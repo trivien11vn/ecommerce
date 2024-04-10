@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback} from 'react'
 import { apiUsers, apiModifyUser, apiDeleteUser} from 'apis/user'
-import { roles } from 'ultils/constant'
+import { roles, blockStatus } from 'ultils/constant'
 import moment from 'moment'
 import { InputField, Pagination, InputForm, Select, Button } from 'components'
 import useDebounce from 'hook/useDebounce'
@@ -8,16 +8,16 @@ import { useSearchParams} from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
-
+import clsx from 'clsx'
 
 const ManageUser = () => {
-  const {handleSubmit, register, formState:{errors}} = useForm({
+  const {handleSubmit, register, formState:{errors}, reset } = useForm({
     email: '',
     firstName: '',
     lastName: '',
     role: '',
     phone: '',
-    status: ''
+    isBlocked: ''
   })
 
   const [user, setUser] = useState(null)
@@ -42,7 +42,6 @@ const ManageUser = () => {
   const queriesDebounce = useDebounce(query.q,800)
 
   useEffect(() => {
-    console.log('check effect')
     const queries = Object.fromEntries([...params]) 
     if(queriesDebounce) queries.q = queriesDebounce
     fetchUsers(queries)
@@ -79,8 +78,18 @@ const ManageUser = () => {
     })
   }
   
+  // useEffect(() => {
+  //   if(editEl){
+  //    reset({
+  //     role: editEl.role,
+  //     status: editEl.isBlocked,
+
+  //    }) 
+  //   }
+  // }, [editEl])
+  
   return (
-    <div className='w-full pl-24'>
+    <div className={clsx('w-full', editEl&&'pl-[8rem]')}>
       <h1 className='h-[75px] flex justify-between items-center text-3xl font-bold px-4 border-b'>
         <span>Manage Users</span>
       </h1>
@@ -118,7 +127,7 @@ const ManageUser = () => {
           </thead>
           <tbody>
             {user?.users?.map((el,idx)=>(
-              <tr key={el.id} className='border border-gray-500'>
+              <tr key={el._id} className='border border-gray-500'>
                 <td className='py-2 px-4'>{idx+1}</td>
                 <td className='py-2 px-4'>{
                 editEl?._id === el._id ? 
@@ -169,7 +178,15 @@ const ManageUser = () => {
                 <td className='py-2 px-4'>
                 {
                 editEl?._id === el._id ? 
-                <Select /> 
+                <Select 
+                  register={register} 
+                  fullWidth
+                  errors={errors} 
+                  defaultValue={el.role}      
+                  id={'role'} 
+                  validate={{required: 'Require fill'}} 
+                  options={roles}
+                /> 
                 : 
                 roles.find(role => +role.code === +el.role)?.value}
                 </td>
@@ -194,7 +211,15 @@ const ManageUser = () => {
                 el.mobile}</td>
                 <td className='py-2 px-4'>{
                 editEl?._id === el._id ? 
-                <Select /> 
+                <Select 
+                  register={register} 
+                  fullWidth
+                  errors={errors} 
+                  defaultValue={el.isBlocked}      
+                  id={'isBlocked'} 
+                  validate={{required: 'Require fill'}} 
+                  options={blockStatus}
+                /> 
                 : 
                 el.isBlocked? 'Block': 'Active'}</td>
                 <td className='py-2 px-4'>{moment(el.createdAt).format('DD/MM/YYYY')}</td>
