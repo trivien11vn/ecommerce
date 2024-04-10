@@ -1,5 +1,5 @@
 import React from 'react'
-import {InputForm, Select} from 'components'
+import {InputForm, Select, Button} from 'components'
 import { useForm } from 'react-hook-form'
 import {useSelector} from 'react-redux'
 
@@ -7,17 +7,19 @@ const CreateProduct = () => {
   const {categories} = useSelector(state => state.app)
   const {register, formState:{errors}, reset, handleSubmit, watch} = useForm()
   const handleCreateProduct = (data) => {
-
+    if(data?.category){
+      data.category = categories?.find(el => el._id === data.category)?.title
+    }
+    console.log(data)
   }
 
-  console.log(watch('category'))
   return (
     <div className='w-full'>
       <h1 className='h-[75px] flex justify-between items-center text-3xl font-bold px-4 border-b'>
         <span>Create New Product</span>
       </h1>
       <div className='p-4 '>
-        <form onSubmit={() => handleSubmit(handleCreateProduct)}>
+        <form onSubmit={handleSubmit(handleCreateProduct)}>
           <InputForm 
             label = 'Name product'
             register={register}
@@ -84,21 +86,18 @@ const CreateProduct = () => {
             />
 
             <Select 
-              label = 'Brand'
-              options = {categories?.map(el =>(
-                {code: el._id,
-                value: el.title}
-              ))}
+              label = 'Brand (Optional)'
+              options = {categories?.find(el => el._id === watch('category'))?.brand?.map(item => ({code:item, value:item}))}
               register={register}
               id = 'brand'
-              validate = {{
-                required: 'Need fill this field'
-              }}
               style='flex-auto'
               errors={errors}
               fullWidth
             />
           </div>
+          <Button type='submit'>
+            Create a new product
+          </Button>
         </form>
       </div>
     </div>
