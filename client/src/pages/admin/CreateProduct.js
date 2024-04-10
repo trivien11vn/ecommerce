@@ -1,16 +1,34 @@
-import React from 'react'
-import {InputForm, Select, Button} from 'components'
+import React, { useCallback, useState} from 'react'
+import {InputForm, Select, Button, MarkdownEditor} from 'components'
 import { useForm } from 'react-hook-form'
 import {useSelector} from 'react-redux'
+import { validate } from 'ultils/helper'
 
 const CreateProduct = () => {
   const {categories} = useSelector(state => state.app)
   const {register, formState:{errors}, reset, handleSubmit, watch} = useForm()
+
+  const [payload, setPayload] = useState({
+    description: ''
+  })
+  const [invalidField, setInvalidField] = useState([])
+
+  const changeValue = useCallback((e)=>{
+    setPayload(e)
+  },[payload])
+
   const handleCreateProduct = (data) => {
-    if(data?.category){
-      data.category = categories?.find(el => el._id === data.category)?.title
+    const invalid = validate(payload, setInvalidField)
+    if(invalid === 0){
+      if(data?.category){
+        data.category = categories?.find(el => el._id === data.category)?.title
+      }
+      const finalPayload = {...data,...payload}
+      const formData = new FormData()
+      for(let i of Object.entries(finalPayload)){
+        formData.append(i[0],i[1])
+      }
     }
-    console.log(data)
   }
 
   return (
@@ -95,9 +113,38 @@ const CreateProduct = () => {
               fullWidth
             />
           </div>
-          <Button type='submit'>
-            Create a new product
-          </Button>
+          <MarkdownEditor 
+            name = 'description'
+            changeValue={changeValue}
+            label = 'description'
+            invalidField={invalidField}
+            setInvalidField={setInvalidField}
+          />
+          <div className='flex flex-col gap-2 mt-8'>
+            <label className='font-semibold' htmlFor='thumb'>Upload Thumb</label>
+            <input 
+              {...register('thumb', {required: 'Need upload thumb'})}
+              type='file' 
+              id='thumb'
+            />
+            {errors['thumb'] && <small className='text-xs text-red-500'>{errors['thumb']?.message}</small>}
+          </div>
+
+          <div className='flex flex-col gap-2 mt-8'>
+            <label className='font-semibold' htmlFor='product'>Upload image of product</label>
+            <input 
+              {...register('product', {required: 'Need upload image of product'})}
+              type='file' 
+              id='product' 
+              multiple
+            />
+            {errors['product'] && <small className='text-xs text-red-500'>{errors['product']?.message}</small>}
+          </div>
+          <div className='mt-8'>
+            <Button type='submit'>
+              Create a new product
+            </Button>
+          </div>
         </form>
       </div>
     </div>
