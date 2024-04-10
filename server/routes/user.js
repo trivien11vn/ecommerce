@@ -13,7 +13,7 @@ router.post('/forgotpassword', ctrls.forgotPassword)
 router.put('/reset_password', ctrls.resetPassword)
 
 router.get('/', [verifyAccessToken, isAdmin], ctrls.getAllUsers)
-router.delete('/', [verifyAccessToken, isAdmin], ctrls.deleteUser)
+router.delete('/:userId', [verifyAccessToken, isAdmin], ctrls.deleteUser)
 router.put('/current', [verifyAccessToken], ctrls.updateUser)
 router.put('/address/', [verifyAccessToken], ctrls.updateUserAddress)
 router.put('/cart/', [verifyAccessToken], ctrls.updateCart)

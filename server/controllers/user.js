@@ -293,12 +293,12 @@ const getAllUsers = asyncHandler(async (req, res) => {
 
 // delete user
 const deleteUser = asyncHandler(async (req, res) => {
-    const {_id} = req.query
-    if(!_id){
+    const {userId} = req.params
+    if(!userId){
         throw new Error("Missing input")
     }
     else{
-        const response = await User.findByIdAndDelete(_id)
+        const response = await User.findByIdAndDelete(userId)  
         return res.status(200).json({
             success: response ? true : false,
             mes: response ? `User with email ${response.email} deleted successfully` : "Something went wrong"
