@@ -22,6 +22,8 @@ import { MdOutlineProductionQuantityLimits } from "react-icons/md";
 import { RiBillLine } from "react-icons/ri";
 import { FaCaretRight } from "react-icons/fa";
 import { RiDashboard3Line } from "react-icons/ri";
+import { RiDeleteBin6Line } from "react-icons/ri";
+
 const icons = {
     FaPhoneAlt,
     MdEmail,
@@ -46,7 +48,8 @@ const icons = {
     MdOutlineProductionQuantityLimits,
     RiBillLine,
     FaCaretRight,
-    RiDashboard3Line
+    RiDashboard3Line,
+    RiDeleteBin6Line
 }
 
 export default icons;

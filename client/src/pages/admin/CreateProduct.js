@@ -1,9 +1,12 @@
-import React, { useCallback, useState} from 'react'
+import React, { useCallback, useState, useEffect} from 'react'
 import {InputForm, Select, Button, MarkdownEditor} from 'components'
 import { useForm } from 'react-hook-form'
 import {useSelector} from 'react-redux'
-import { validate } from 'ultils/helper'
+import { validate, getBase64 } from 'ultils/helper'
+import { toast } from 'react-toastify'
+import icons from 'ultils/icon'
 
+const {RiDeleteBin6Line} = icons
 const CreateProduct = () => {
   const {categories} = useSelector(state => state.app)
   const {register, formState:{errors}, reset, handleSubmit, watch} = useForm()
@@ -12,10 +15,47 @@ const CreateProduct = () => {
     description: ''
   })
   const [invalidField, setInvalidField] = useState([])
+  
+  const [hoverElement, setHoverElement] = useState(null)
 
+  const [preview, setPreview] = useState({
+    thumb: null,
+    images: []
+  })
   const changeValue = useCallback((e)=>{
     setPayload(e)
   },[payload])
+
+  const handlePreviewThumb = async(file) => {
+    const base64Thumb = await getBase64(file)
+    setPreview(prev => ({...prev, thumb: base64Thumb}))
+  }
+
+  const handlePreviewImages = async(files) => {
+    const imagesPreview = []
+    for(let i of files){
+      if(i.type !== 'image/png' && i.type !== 'image/jpeg'){
+        toast.warning('The file sent is not a JPG or PNG')
+        return
+      }
+      const base64 = await getBase64(i)
+      imagesPreview.push({
+        name: i.name,
+        path: base64
+      })
+    }
+    if(imagesPreview.length > 0){
+      setPreview(prev => ({...prev, images: imagesPreview}))
+    }
+  }
+  useEffect(() => {
+    handlePreviewThumb(watch('thumb')[0])
+  }, [watch('thumb')])
+
+  useEffect(() => {
+    handlePreviewImages(watch('images'))
+  }, [watch('images')])
+
 
   const handleCreateProduct = (data) => {
     const invalid = validate(payload, setInvalidField)
@@ -28,6 +68,17 @@ const CreateProduct = () => {
       for(let i of Object.entries(finalPayload)){
         formData.append(i[0],i[1])
       }
+
+    }
+  }
+
+  const handleRemoveImage = (name) => {
+    const files = [...watch('images')]
+    reset({
+      images: files?.filter(el => el.name !== name)
+    })
+    if(preview.images?.some(el => el.name === name)){
+      setPreview(prev => ({...prev, images: prev.images?.filter(el => el.name !== name)}))
     }
   }
 
@@ -116,7 +167,7 @@ const CreateProduct = () => {
           <MarkdownEditor 
             name = 'description'
             changeValue={changeValue}
-            label = 'description'
+            label = 'Description'
             invalidField={invalidField}
             setInvalidField={setInvalidField}
           />
@@ -129,17 +180,41 @@ const CreateProduct = () => {
             />
             {errors['thumb'] && <small className='text-xs text-red-500'>{errors['thumb']?.message}</small>}
           </div>
+          
+          {preview.thumb 
+            && 
+          <div className='my-4'>
+            <img src={preview.thumb} alt='thumbnail' className='w-[200px] object-contain'></img>
+          </div>
+          }
 
           <div className='flex flex-col gap-2 mt-8'>
             <label className='font-semibold' htmlFor='product'>Upload image of product</label>
             <input 
-              {...register('product', {required: 'Need upload image of product'})}
+              {...register('images', {required: 'Need upload image of product'})}
               type='file' 
               id='product' 
               multiple
             />
-            {errors['product'] && <small className='text-xs text-red-500'>{errors['product']?.message}</small>}
+            {errors['images'] && <small className='text-xs text-red-500'>{errors['product']?.message}</small>}
           </div>
+
+          {preview.images?.length > 0 
+            && 
+          <div className='my-4 flex w-full gap-2 flex-wrap'>
+            {
+              preview.images?.map((el,index) => (
+                <div onMouseEnter={() => setHoverElement(el.name)} onMouseLeave={() => setHoverElement(null)} key={index} className='w-fit relative'>
+                  <img src={el.path} alt='image of product' className='w-[200px] object-contain'></img>
+                  {hoverElement === el.name && <div className='absolute cursor-pointer animate-scale-up-center inset-0 bg-overlay flex items-center justify-center'  onClick={()=>handleRemoveImage(el.name)}>
+                    <RiDeleteBin6Line size={24} color='white'/>
+                  </div>}
+                </div>
+              ))
+            }
+          </div>
+          }
+
           <div className='mt-8'>
             <Button type='submit'>
               Create a new product
