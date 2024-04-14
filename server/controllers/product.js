@@ -3,16 +3,25 @@ const asyncHandler = require("express-async-handler")
 const slugify = require('slugify')
 
 const createProduct = asyncHandler(async(req, res)=>{
-    if(Object.keys(req.body).length === 0){
+    console.log('------------------------------')
+    console.log(req.body)
+    const {title, price, description, brand, category, color} = req.body
+    console.log(req.files)
+    const thumb = req.files?.thumb[0]?.path
+    const image = req.files?.images?.map(el => el.path)
+
+    console.log('+++',thumb)
+    console.log('+++',image)
+    if(!title || !price || !description || !brand || !category || !color){
         throw new Error("Missing input")
     }
-    if(req.body && req.body.title) {
-        req.body.slug = slugify(req.body.title)
-    }
+    req.body.slug = slugify(title)
+    if(thumb) req.body.thumb = thumb
+    if(image) req.body.image = image
     const newProduct = await Product.create(req.body)
     return res.status(200).json({
         success: newProduct ? true : false,
-        createdProduct: newProduct ? newProduct : "Cannot create new product"
+        mes: newProduct ? 'Created successfully' : "Cannot create new product"
     })
 })
 
@@ -50,7 +59,7 @@ const getAllProduct = asyncHandler(async(req, res)=>{
     // chuyen tu chuoi json sang object
     const formatedQueries = JSON.parse(queryString);
     let colorFinish = {}
-    // Filtering
+    //Filtering
     if (queries?.title) formatedQueries.title = { $regex: queries.title, $options: 'i' };
     if (queries?.category) formatedQueries.category = { $regex: queries.category, $options: 'i' };
     if (queries?.color){
@@ -61,8 +70,21 @@ const getAllProduct = asyncHandler(async(req, res)=>{
         }))
         colorFinish = {$or: colorQuery}
     }
-    const q = {...colorFinish, ...formatedQueries}
-    let queryCommand =  Product.find(q)
+    let queryFinish = {}
+    if(queries?.q){
+        delete formatedQueries.q
+        queryFinish = {
+            $or: [
+                {color: {$regex: queries.q, $options: 'i' }},
+                {title: {$regex: queries.q, $options: 'i' }},
+                {category: {$regex: queries.q, $options: 'i' }},
+                {brand: {$regex: queries.q, $options: 'i' }},
+               
+            ]
+        }
+    }
+    const qr = {...colorFinish, ...formatedQueries, ...queryFinish}
+    let queryCommand =  Product.find(qr)
     try {
         // sorting
         if(req.query.sort){
@@ -88,7 +110,7 @@ const getAllProduct = asyncHandler(async(req, res)=>{
 
 
         const products = await queryCommand
-        const counts = await Product.countDocuments(q);
+        const counts = await Product.countDocuments(qr);
         return res.status(200).json({
             success: true,
             counts: counts,

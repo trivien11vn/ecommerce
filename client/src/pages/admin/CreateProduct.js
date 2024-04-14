@@ -1,14 +1,19 @@
 import React, { useCallback, useState, useEffect} from 'react'
-import {InputForm, Select, Button, MarkdownEditor} from 'components'
+import {InputForm, Select, Button, MarkdownEditor, Loading} from 'components'
 import { useForm } from 'react-hook-form'
-import {useSelector} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 import { validate, getBase64 } from 'ultils/helper'
 import { toast } from 'react-toastify'
 import icons from 'ultils/icon'
+import {apiCreateProduct} from 'apis/product'
+import { showModal } from 'store/app/appSlice'
+
 
 const {RiDeleteBin6Line} = icons
 const CreateProduct = () => {
   const {categories} = useSelector(state => state.app)
+
+  const dispatch = useDispatch()
   const {register, formState:{errors}, reset, handleSubmit, watch} = useForm()
 
   const [payload, setPayload] = useState({
@@ -57,7 +62,7 @@ const CreateProduct = () => {
   }, [watch('images')])
 
 
-  const handleCreateProduct = (data) => {
+  const handleCreateProduct = async(data) => {
     const invalid = validate(payload, setInvalidField)
     if(invalid === 0){
       if(data?.category){
@@ -68,19 +73,26 @@ const CreateProduct = () => {
       for(let i of Object.entries(finalPayload)){
         formData.append(i[0],i[1])
       }
-
+      if(finalPayload.thumb) formData.append('thumb', finalPayload.thumb[0])
+      if(finalPayload.images) {
+        for (let image of finalPayload.images) formData.append('images', image)
+      }
+      dispatch(showModal({isShowModal: true, modalChildren: <Loading />}))
+      const response = await apiCreateProduct(formData)
+      dispatch(showModal({isShowModal: false, modalChildren: null}))
+      if(response.success){
+        toast.success(response.mes)
+        reset()
+        setPayload({
+          description: ''
+        })
+      }
+      else{
+        toast.error(response.mes)
+      }
     }
   }
 
-  const handleRemoveImage = (name) => {
-    const files = [...watch('images')]
-    reset({
-      images: files?.filter(el => el.name !== name)
-    })
-    if(preview.images?.some(el => el.name === name)){
-      setPreview(prev => ({...prev, images: prev.images?.filter(el => el.name !== name)}))
-    }
-  }
 
   return (
     <div className='w-full'>
@@ -206,9 +218,6 @@ const CreateProduct = () => {
               preview.images?.map((el,index) => (
                 <div onMouseEnter={() => setHoverElement(el.name)} onMouseLeave={() => setHoverElement(null)} key={index} className='w-fit relative'>
                   <img src={el.path} alt='image of product' className='w-[200px] object-contain'></img>
-                  {hoverElement === el.name && <div className='absolute cursor-pointer animate-scale-up-center inset-0 bg-overlay flex items-center justify-center'  onClick={()=>handleRemoveImage(el.name)}>
-                    <RiDeleteBin6Line size={24} color='white'/>
-                  </div>}
                 </div>
               ))
             }

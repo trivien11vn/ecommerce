@@ -26,3 +26,8 @@ const initRoutes = (app) => {
 }
 
 module.exports = initRoutes
+
+//CREATE : POST       (body) -- khong bi lo
+//READ : GET          (query)-- bi lo
+//UPDATE : PUT        (body)
+//DELETE : DELETE     (query)

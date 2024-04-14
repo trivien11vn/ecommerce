@@ -90,3 +90,11 @@
   .w400{
     width:400px;
   }
+
+  code {
+    white-space: initial;
+  }
+
+  .my-auto{
+    margin: auto 0;
+  }

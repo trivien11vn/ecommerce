@@ -6,6 +6,7 @@ import Slider from "react-slick";
 import ReactImageMagnify from 'react-image-magnify';
 import { formatPrice, formatPricee, renderStarfromNumber } from '../../ultils/helper';
 import {productExtra} from '../../ultils/constant'
+import DOMPurify from 'dompurify';
 
 const settings = {
   dots: false,
@@ -86,7 +87,7 @@ const DetailProduct = () => {
       </div>
       <div className='w-main m-auto mt-4 flex'>
         <div className='flex flex-col gap-4 w-2/5'>
-          <div className='h-[458px] w-[458px] border overflow-hidden'>
+          <div className='h-[458px] w-[458px] border overflow-hidden flex items-center'>
             <ReactImageMagnify {...{
               smallImage: {
                   alt: 'Wristwatch by Ted Baker London',
@@ -97,7 +98,7 @@ const DetailProduct = () => {
                   src: currentImage,
                   width: 1200,
                   height: 1200
-              }
+              },
             }} />
           </div>
           {/* <img src={product?.image} alt='product' className='border h-[458px] w-[458px] object-cover' /> */}
@@ -129,9 +130,14 @@ const DetailProduct = () => {
             </span>
           </div>
           <ul className='text-sm text-gray-500 list-square pl-4'>
-            {product?.description?.map(el=>(
-                <li className=' leading-6' key={el}>{el}</li>
-              ))}
+            {product?.description?.length > 1 
+              &&
+            product?.description?.map(el=>(
+              <li className=' leading-6' key={el}>{el}</li>
+            )) }
+            {product?.description?.length === 1 
+              &&
+            <div className='text-sm line-clamp-[10] mb-8' dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(product?.description[0])}}></div>}
           </ul>
           <div className='flex flex-col gap-8'>
             <div className='flex items-center gap-4'>
