@@ -5,6 +5,7 @@ import { apiGetProduct } from 'apis/product'
 import moment from 'moment'
 import { useSearchParams, createSearchParams, useNavigate, useLocation} from 'react-router-dom'
 import useDebounce from 'hook/useDebounce'
+import UpdateProduct from './UpdateProduct'
 
 const ManageProduct = () => {
   const navigate = useNavigate()
@@ -13,6 +14,8 @@ const ManageProduct = () => {
   const {register,formState:{errors}, handleSubmit, reset, watch} = useForm()
   const [products, setProducts] = useState(null)
   const [counts, setCounts] = useState(0)
+  const [editProduct, setEditProduct] = useState(null)
+
   const handleSearchProduct = (data) => {
     console.log(data)
   }
@@ -49,8 +52,10 @@ const ManageProduct = () => {
   console.log(params.get('page'))
   return (
     <div className='w-full flex flex-col gap-4 relative'>
+      <div className='absolute inset-0 bg-gray-100 min-h-screen z-50'>
+        <UpdateProduct />
+      </div>
       <div className='h-[69px] w-full'>
-
       </div>
       <div className='p-4 border-b w-full flex justify-between items-center fixed top-0 bg-black'>
         <h1 className='text-3xl font-bold tracking-tight'>ManageProduct</h1>
@@ -83,6 +88,7 @@ const ManageProduct = () => {
             <th className='text-center py-2'>Color</th>
             <th className='text-center py-2'>Ratings</th>
             <th className='text-center py-2'>Update</th>
+            <th className='text-center py-2'>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -99,6 +105,10 @@ const ManageProduct = () => {
               <td className='text-center py-2'>{el.color}</td>
               <td className='text-center py-2'>{el.totalRatings}</td>
               <td className='text-center py-2'>{moment(el.updatedAt).format('DD/MM/YYYY')}</td>
+              <td className='text-center py-2'>
+                <span className='hover:underline cursor-pointer text-blue-500 px-0.5'>Edit</span>
+                <span className='hover:underline cursor-pointer text-blue-500 px-0.5'>Delete</span>
+              </td>
             </tr>
           ))}
         </tbody>
