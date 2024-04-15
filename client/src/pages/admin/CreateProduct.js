@@ -19,17 +19,18 @@ const CreateProduct = () => {
   const [payload, setPayload] = useState({
     description: ''
   })
-  const [invalidField, setInvalidField] = useState([])
-  
-  const [hoverElement, setHoverElement] = useState(null)
-
   const [preview, setPreview] = useState({
     thumb: null,
     images: []
   })
+
+  const [invalidField, setInvalidField] = useState([])
+  
   const changeValue = useCallback((e)=>{
     setPayload(e)
   },[payload])
+
+
 
   const handlePreviewThumb = async(file) => {
     const base64Thumb = await getBase64(file)
@@ -216,7 +217,7 @@ const CreateProduct = () => {
           <div className='my-4 flex w-full gap-2 flex-wrap'>
             {
               preview.images?.map((el,index) => (
-                <div onMouseEnter={() => setHoverElement(el.name)} onMouseLeave={() => setHoverElement(null)} key={index} className='w-fit relative'>
+                <div key={index} className='w-fit relative'>
                   <img src={el.path} alt='image of product' className='w-[200px] object-contain'></img>
                 </div>
               ))

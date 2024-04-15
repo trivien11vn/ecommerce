@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import { InputForm, Pagination} from 'components'
 import { useForm } from 'react-hook-form'
 import { apiGetProduct } from 'apis/product'
@@ -11,10 +11,15 @@ const ManageProduct = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const [params] = useSearchParams()
-  const {register,formState:{errors}, handleSubmit, reset, watch} = useForm()
+  const {register,formState:{errors}, handleSubmit, watch} = useForm()
   const [products, setProducts] = useState(null)
   const [counts, setCounts] = useState(0)
   const [editProduct, setEditProduct] = useState(null)
+  const [update, setUpdate] = useState(false)
+
+  const render = useCallback(() => { 
+    setUpdate(!update)
+   })
 
   const handleSearchProduct = (data) => {
     console.log(data)
@@ -32,7 +37,7 @@ const ManageProduct = () => {
   useEffect(() => {
     const searchParams = Object.fromEntries([...params]) 
     fetchProduct(searchParams)
-  }, [params])
+  }, [params, update])
 
   useEffect(() => {
     if(queryDebounce) {
@@ -52,9 +57,10 @@ const ManageProduct = () => {
   console.log(params.get('page'))
   return (
     <div className='w-full flex flex-col gap-4 relative'>
-      <div className='absolute inset-0 bg-gray-100 min-h-screen z-50'>
-        <UpdateProduct />
-      </div>
+      {editProduct &&  
+      <div className='absolute inset-0 bg-zinc-900 h-[200%] z-50 flex-auto'>
+        <UpdateProduct editProduct={editProduct} render={render}/>
+      </div>}
       <div className='h-[69px] w-full'>
       </div>
       <div className='p-4 border-b w-full flex justify-between items-center fixed top-0 bg-black'>
@@ -106,7 +112,7 @@ const ManageProduct = () => {
               <td className='text-center py-2'>{el.totalRatings}</td>
               <td className='text-center py-2'>{moment(el.updatedAt).format('DD/MM/YYYY')}</td>
               <td className='text-center py-2'>
-                <span className='hover:underline cursor-pointer text-blue-500 px-0.5'>Edit</span>
+                <span onClick={() => setEditProduct(el)} className='hover:underline cursor-pointer text-blue-500 px-0.5'>Edit</span>
                 <span className='hover:underline cursor-pointer text-blue-500 px-0.5'>Delete</span>
               </td>
             </tr>
