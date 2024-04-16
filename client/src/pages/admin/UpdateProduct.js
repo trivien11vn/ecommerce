@@ -4,11 +4,10 @@ import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { validate, getBase64 } from 'ultils/helper'
-import {apiCreateProduct} from 'apis/product'
+import {apiUpdateProduct} from 'apis/product'
 import { showModal } from 'store/app/appSlice'
 
-const UpdateProduct = ({editProduct, render}) => {
-  console.log(editProduct)
+const UpdateProduct = ({editProduct, render, setEditProduct}) => {
   const {categories} = useSelector(state => state.app)
   const dispatch = useDispatch()
 
@@ -17,6 +16,7 @@ const UpdateProduct = ({editProduct, render}) => {
   const [payload, setPayload] = useState({
     description: ''
   })
+
 
   const [preview, setPreview] = useState({
     thumb: null,
@@ -58,47 +58,46 @@ const UpdateProduct = ({editProduct, render}) => {
         return
       }
       const base64 = await getBase64(i)
-      imagesPreview.push({
-        name: i.name,
-        path: base64
-      })
+      imagesPreview.push(base64)
     }
     if(imagesPreview.length > 0){
       setPreview(prev => ({...prev, images: imagesPreview}))
     }
   }
+
   useEffect(() => {
-    if(watch('thumb')) handlePreviewThumb(watch('thumb')[0])
+    if(watch('thumb') instanceof FileList && watch('thumb').length > 0) handlePreviewThumb(watch('thumb')[0])
   }, [watch('thumb')])
 
   useEffect(() => {
-    if(watch('images')) handlePreviewImages(watch('images'))
+    if(watch('images') instanceof FileList && watch('images').length > 0) handlePreviewImages(watch('images'))
   }, [watch('images')])
 
-  const handleCreateProduct = async(data) => {
+  const handleUpdateProduct = async(data) => {
     const invalid = validate(payload, setInvalidField)
     if(invalid === 0){
       if(data?.category){
-        data.category = categories?.find(el => el._id === data.category)?.title
+        data.category = categories?.find(el => el.title === data.category)?.title
       }
       const finalPayload = {...data,...payload}
+      console.log(finalPayload)
       const formData = new FormData()
       for(let i of Object.entries(finalPayload)){
         formData.append(i[0],i[1])
       }
-      if(finalPayload.thumb) formData.append('thumb', finalPayload.thumb[0])
+      if(finalPayload.thumb) formData.append('thumb', finalPayload?.thumb?.length === 0 ? preview.thumb : finalPayload.thumb[0])
       if(finalPayload.images) {
-        for (let image of finalPayload.images) formData.append('images', image)
+        const images = finalPayload?.images?.length === 0 ? preview?.images : finalPayload?.images
+        for (let image of images) formData.append('images', image)
       }
       dispatch(showModal({isShowModal: true, modalChildren: <Loading />}))
-      const response = await apiCreateProduct(formData)
+      const response = await apiUpdateProduct(formData, editProduct._id)
       dispatch(showModal({isShowModal: false, modalChildren: null}))
+      console.log(response)
       if(response.success){
         toast.success(response.mes)
-        reset()
-        setPayload({
-          description: ''
-        })
+        render()
+        setEditProduct(null)
       }
       else{
         toast.error(response.mes)
@@ -109,10 +108,11 @@ const UpdateProduct = ({editProduct, render}) => {
   return (
     <div className='w-full'>
         <h1 className='h-[75px] flex justify-between items-center text-3xl font-bold px-4 border-b'>
-          <span>Create New Product</span>
+          <span>Update Product</span>
+          <span className='text-main text-lg hover:underline cursor-pointer' onClick={()=>setEditProduct(null)}>Cancel</span>
         </h1>
         <div className='p-4 '>
-        <form onSubmit={handleSubmit(handleCreateProduct)}>
+        <form onSubmit={handleSubmit(handleUpdateProduct)}>
           <InputForm
             label = 'Name product'
             register={register}
@@ -201,7 +201,7 @@ const UpdateProduct = ({editProduct, render}) => {
           <div className='flex flex-col gap-2 mt-8'>
             <label className='font-semibold' htmlFor='thumb'>Upload Thumb</label>
             <input 
-              {...register('thumb', {required: 'Need upload thumb'})}
+              {...register('thumb')}
               type='file' 
               id='thumb'
             />
@@ -218,7 +218,7 @@ const UpdateProduct = ({editProduct, render}) => {
           <div className='flex flex-col gap-2 mt-8'>
             <label className='font-semibold' htmlFor='product'>Upload image of product</label>
             <input 
-              {...register('images', {required: 'Need upload image of product'})}
+              {...register('images')}
               type='file' 
               id='product' 
               multiple

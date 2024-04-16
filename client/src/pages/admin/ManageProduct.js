@@ -1,11 +1,14 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import { InputForm, Pagination} from 'components'
 import { useForm } from 'react-hook-form'
-import { apiGetProduct } from 'apis/product'
+import { apiGetProduct, apiDeleteProduct} from 'apis/product'
 import moment from 'moment'
 import { useSearchParams, createSearchParams, useNavigate, useLocation} from 'react-router-dom'
 import useDebounce from 'hook/useDebounce'
 import UpdateProduct from './UpdateProduct'
+import icons from 'ultils/icon'
+import Swal from 'sweetalert2'
+import { toast } from 'react-toastify'
 
 const ManageProduct = () => {
   const navigate = useNavigate()
@@ -16,6 +19,26 @@ const ManageProduct = () => {
   const [counts, setCounts] = useState(0)
   const [editProduct, setEditProduct] = useState(null)
   const [update, setUpdate] = useState(false)
+  const handleDeleteProduct = async(pid) => {
+    Swal.fire({
+      title: 'Are you sure',
+      text: 'Are you sure you want to delete this product?',
+      icon: 'warning',
+      showCancelButton: true
+    }).then(async(rs)=>{
+      if(rs.isConfirmed){
+        const response = await apiDeleteProduct(pid)
+        if(response.success){
+          toast.success(response.mes)
+        }
+        else{
+          toast.error(response.mes)
+        }
+        render()
+      }
+    })
+    
+  }
 
   const render = useCallback(() => { 
     setUpdate(!update)
@@ -34,6 +57,7 @@ const ManageProduct = () => {
   }
 
   const queryDebounce = useDebounce(watch('q'),800)
+  
   useEffect(() => {
     const searchParams = Object.fromEntries([...params]) 
     fetchProduct(searchParams)
@@ -59,7 +83,7 @@ const ManageProduct = () => {
     <div className='w-full flex flex-col gap-4 relative'>
       {editProduct &&  
       <div className='absolute inset-0 bg-zinc-900 h-[200%] z-50 flex-auto'>
-        <UpdateProduct editProduct={editProduct} render={render}/>
+        <UpdateProduct editProduct={editProduct} render={render} setEditProduct={setEditProduct}/>
       </div>}
       <div className='h-[69px] w-full'>
       </div>
@@ -113,7 +137,7 @@ const ManageProduct = () => {
               <td className='text-center py-2'>{moment(el.updatedAt).format('DD/MM/YYYY')}</td>
               <td className='text-center py-2'>
                 <span onClick={() => setEditProduct(el)} className='hover:underline cursor-pointer text-blue-500 px-0.5'>Edit</span>
-                <span className='hover:underline cursor-pointer text-blue-500 px-0.5'>Delete</span>
+                <span onClick={() => handleDeleteProduct(el._id)} className='hover:underline cursor-pointer text-blue-500 px-0.5'>Delete</span>
               </td>
             </tr>
           ))}
