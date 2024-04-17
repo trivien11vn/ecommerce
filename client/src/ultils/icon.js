@@ -23,7 +23,9 @@ import { RiBillLine } from "react-icons/ri";
 import { FaCaretRight } from "react-icons/fa";
 import { RiDashboard3Line } from "react-icons/ri";
 import { RiDeleteBin6Line } from "react-icons/ri";
-
+import { MdModeEdit } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
+import { FaCopy } from "react-icons/fa";
 const icons = {
     FaPhoneAlt,
     MdEmail,
@@ -49,7 +51,10 @@ const icons = {
     RiBillLine,
     FaCaretRight,
     RiDashboard3Line,
-    RiDeleteBin6Line
+    RiDeleteBin6Line,
+    MdModeEdit,
+    MdDelete,
+    FaCopy
 }
 
 export default icons;

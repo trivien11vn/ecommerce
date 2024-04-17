@@ -1,17 +1,14 @@
 const Product = require('../models/product')
 const asyncHandler = require("express-async-handler")
 const slugify = require('slugify')
+const makeSku = require('uniqid')
+
 
 const createProduct = asyncHandler(async(req, res)=>{
-    console.log('------------------------------')
-    console.log(req.body)
     const {title, price, description, brand, category, color} = req.body
-    console.log(req.files)
     const thumb = req.files?.thumb[0]?.path
     const image = req.files?.images?.map(el => el.path)
 
-    console.log('+++',thumb)
-    console.log('+++',image)
     if(!title || !price || !description || !brand || !category || !color){
         throw new Error("Missing input")
     }
@@ -209,6 +206,25 @@ const uploadImage = asyncHandler(async(req, res)=>{
     }
 })
 
+const addVariant = asyncHandler(async(req, res)=>{
+    const {pid} = req.params
+    const {title, price, color} = req.body
+    const thumb = req.files?.thumb[0]?.path
+    const image = req.files?.images?.map(el => el.path)
+
+    if(!title || !price || !color){
+        throw new Error("Missing input")
+    }
+    const response = await Product.findByIdAndUpdate(pid, {$push: {variants: {color, price, title, thumb, image, sku: makeSku().toUpperCase()}}},{new: true})
+    return res.status(200).json({
+        status: response? true : false,
+        response: response? response : "Cannot upload image"
+    })
+    
+})
+
+
+
 
 module.exports = {
     createProduct,
@@ -217,5 +233,6 @@ module.exports = {
     updateProduct,
     deleteProduct,
     ratings,
-    uploadImage 
+    uploadImage,
+    addVariant
 }

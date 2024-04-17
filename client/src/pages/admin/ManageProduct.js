@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react'
-import { InputForm, Pagination} from 'components'
+import { InputForm, Pagination, Variant} from 'components'
 import { useForm } from 'react-hook-form'
 import { apiGetProduct, apiDeleteProduct} from 'apis/product'
 import moment from 'moment'
@@ -10,7 +10,9 @@ import icons from 'ultils/icon'
 import Swal from 'sweetalert2'
 import { toast } from 'react-toastify'
 
+
 const ManageProduct = () => {
+  const {MdModeEdit, MdDelete, FaCopy} = icons
   const navigate = useNavigate()
   const location = useLocation()
   const [params] = useSearchParams()
@@ -19,6 +21,8 @@ const ManageProduct = () => {
   const [counts, setCounts] = useState(0)
   const [editProduct, setEditProduct] = useState(null)
   const [update, setUpdate] = useState(false)
+  const [variant, setVariant] = useState(null)
+
   const handleDeleteProduct = async(pid) => {
     Swal.fire({
       title: 'Are you sure',
@@ -85,6 +89,12 @@ const ManageProduct = () => {
       <div className='absolute inset-0 bg-zinc-900 h-[200%] z-50 flex-auto'>
         <UpdateProduct editProduct={editProduct} render={render} setEditProduct={setEditProduct}/>
       </div>}
+
+      {variant &&  
+      <div className='absolute inset-0 bg-zinc-900 h-[200%] z-50 flex-auto'>
+        <Variant variant={variant} render={render} setVariant={setVariant}/>
+      </div>}
+
       <div className='h-[69px] w-full'>
       </div>
       <div className='p-4 border-b w-full flex justify-between items-center fixed top-0 bg-black'>
@@ -136,9 +146,15 @@ const ManageProduct = () => {
               <td className='text-center py-2'>{el.totalRatings}</td>
               <td className='text-center py-2'>{moment(el.updatedAt).format('DD/MM/YYYY')}</td>
               <td className='text-center py-2'>
-                <span onClick={() => setEditProduct(el)} className='hover:underline cursor-pointer text-blue-500 px-0.5'>Edit</span>
-                <span onClick={() => handleDeleteProduct(el._id)} className='hover:underline cursor-pointer text-blue-500 px-0.5'>Delete</span>
-              </td>
+                <span onClick={() => setEditProduct(el)} 
+                className='inline-block hover:underline cursor-pointer text-blue-500 hover:text-orange-500 px-0.5'><MdModeEdit
+                size={24}/></span>
+                <span onClick={() => handleDeleteProduct(el._id)} 
+                className='inline-block hover:underline cursor-pointer text-blue-500 hover:text-orange-500 px-0.5'><MdDelete size={24}/></span>
+                <span onClick={() => setVariant(el)} 
+                className='inline-block hover:underline cursor-pointer text-blue-500 hover:text-orange-500 px-0.5'><FaCopy 
+                size={22}/></span>
+              </td>  
             </tr>
           ))}
         </tbody>

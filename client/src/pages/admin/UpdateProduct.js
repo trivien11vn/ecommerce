@@ -30,7 +30,7 @@ const UpdateProduct = ({editProduct, render, setEditProduct}) => {
       quantity: editProduct?.quantity || '',
       color: editProduct?.color || '',
       category: editProduct?.category || '',
-      brand: editProduct?.brand?.toLowerCase() || '',
+      brand: editProduct?.brand?.toUpperCase() || '',
     })
     setPayload({description: typeof editProduct?.description === 'object' ? editProduct?.description?.join(', ') : editProduct?.description})
     setPreview({
@@ -200,7 +200,7 @@ const UpdateProduct = ({editProduct, render, setEditProduct}) => {
 
             <Select 
               label = 'Brand (Optional)'
-              options = {categories?.find(el => el.title === watch('category'))?.brand?.map(item => ({code:item.toLowerCase() , value:item}))}
+              options = {categories?.find(el => el.title === watch('category'))?.brand?.map(item => ({code:item.toUpperCase() , value:item}))}
               register={register}
               id = 'brand'
               style='flex-auto'
