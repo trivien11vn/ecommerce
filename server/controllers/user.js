@@ -102,8 +102,17 @@ const login = asyncHandler(async(req, res)=>{
             mes: "Missing input"
         })}
     
+    
     const response = await User.findOne({email})
     if(response && await response.isCorrectPassword(password)){
+        const {isBlocked} = response.toObject()
+        console.log('check block')
+        console.log(isBlocked)
+        if(isBlocked){
+            return res.status(400).json({
+                success: false,
+                mes: "Account is blocked"
+            })}
         const {password, role, refresh_token, ...userData} = response.toObject()
         const accessToken = generateAccessToken(response._id, role)
         const refreshToken = generateRefreshToken(response._id)

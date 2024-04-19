@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {Route, Routes} from 'react-router-dom'
 import {Login,Home,Public,Service,DetailProduct,FAQ,Products,Blogs,Final_Register,ResetPassword} from 'pages/public'
 import { AdminLayout, ManageOrder, ManageProduct, ManageUser, CreateProduct, DashBoard} from 'pages/admin'
-import { UserLayout, Personal} from 'pages/user'
+import { UserLayout, MyCart, History, Personal, WishList} from 'pages/user'
 import path from './ultils/path'
 import {getCategories} from 'store/app/asyncAction'
 import {useDispatch, useSelector} from 'react-redux'
@@ -40,6 +40,9 @@ function App() {
       </Route>
       <Route path={path.USER} element={<UserLayout />}>
         <Route path={path.PERSONAL} element={<Personal/>}/>
+        <Route path={path.MYCART} element={<MyCart/>}/>
+        <Route path={path.HISTORY} element={<History/>}/>
+        <Route path={path.WISHLIST} element={<WishList/>}/>
       </Route>
       <Route path={path.FINAL_REGISTER} element={<Final_Register />} />
       <Route path={path.LOGIN} element={<Login />} />

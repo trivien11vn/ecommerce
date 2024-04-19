@@ -41,11 +41,11 @@ const Top_Header = () => {
               <span>
                 {`Hello, ${current?.lastName} ${current?.firstName}`}
               </span>
-              <span 
+              {/* <span 
                 onClick={() => dispatch(logout())}
                 className='hover:rounded-full hover:bg-gray-200 hover:text-main cursor-pointer p-2'>
                 <MdLogout size={18}/>
-              </span>
+              </span> */}
             </div>: 
             <Link className='hover:text-gray-700' to={`/${path.LOGIN}`}>Sign In or Create Account</Link>}
         </div>

@@ -4,6 +4,7 @@ import path from 'ultils/path'
 import { useSelector } from 'react-redux'
 import { UserSideBar } from 'components'
 
+
 const UserLayout = () => {
   const {isLogin,current} = useSelector(state => state.user)
   if(!isLogin || !current){
@@ -13,7 +14,7 @@ const UserLayout = () => {
   return (
     <div className='flex'>
       <UserSideBar />
-      <div className='flex-auto'>
+      <div className='flex-auto bg-gray-100 min-h-screen'>
         <Outlet />
       </div>
     </div>

@@ -258,3 +258,36 @@ export const blockStatus = [
         value: 'Active'
     }
 ]
+
+
+export const userSidebar = [
+    {
+        id: 1,
+        type: 'single',
+        text: 'Personal',
+        path: `/${path.USER}/${path.PERSONAL}`,
+        icon: <RiDashboard3Line size={20}/>
+    },
+    {
+        id: 2,
+        type: 'single',
+        text: 'My cart',
+        path: `/${path.USER}/${path.MYCART}`,
+        icon: <MdGroups size={20}/>
+    },
+    {
+        id: 3,
+        type: 'single',
+        text: 'History',
+        path: `/${path.USER}/${path.HISTORY}`,
+        icon: <MdGroups size={20}/>
+    },
+    {
+        id: 4,
+        type: 'single',
+        text: 'Wish List',
+        path: `/${path.USER}/${path.WISHLIST}`,
+        icon: <RiBillLine size={20}/>
+    },
+
+]
