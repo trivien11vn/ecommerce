@@ -33,10 +33,12 @@ const ManageProduct = () => {
       if(rs.isConfirmed){
         const response = await apiDeleteProduct(pid)
         if(response.success){
-          toast.success(response.mes)
+          console.log('sure')
+         toast.success(response.mes)
         }
         else{
-          toast.error(response.mes)
+          console.log('not sure')
+         toast.error(response.mes)
         }
         render()
       }
@@ -127,6 +129,7 @@ const ManageProduct = () => {
             <th className='text-center py-2'>Sold</th>
             <th className='text-center py-2'>Color</th>
             <th className='text-center py-2'>Ratings</th>
+            <th className='text-center py-2'>Vatiants</th>
             <th className='text-center py-2'>Update</th>
             <th className='text-center py-2'>Action</th>
           </tr>
@@ -144,6 +147,7 @@ const ManageProduct = () => {
               <td className='text-center py-2'>{el.soldQuantity}</td>
               <td className='text-center py-2'>{el.color}</td>
               <td className='text-center py-2'>{el.totalRatings}</td>
+              <td className='text-center py-2'>{el.variants?.length || 0}</td>
               <td className='text-center py-2'>{moment(el.updatedAt).format('DD/MM/YYYY')}</td>
               <td className='text-center py-2'>
                 <span onClick={() => setEditProduct(el)} 

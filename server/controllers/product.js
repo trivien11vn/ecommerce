@@ -187,7 +187,7 @@ const ratings = asyncHandler(async(req, res)=>{
     await updatedProduct.save()
 
     return res.status(200).json({
-        status: true,
+        success: true,
         updatedProduct
     })
 })
@@ -200,7 +200,7 @@ const uploadImage = asyncHandler(async(req, res)=>{
     else{
         const response = await Product.findByIdAndUpdate(pid, {$push: {image: {$each: req.files.map(e1 => e1.path)}}},{new: true})
         return res.status(200).json({
-            status: response? true : false,
+            success: response? true : false,
             uploadImage: response? response : "Cannot upload image"
         })
     }
@@ -217,8 +217,8 @@ const addVariant = asyncHandler(async(req, res)=>{
     }
     const response = await Product.findByIdAndUpdate(pid, {$push: {variants: {color, price, title, thumb, image, sku: makeSku().toUpperCase()}}},{new: true})
     return res.status(200).json({
-        status: response? true : false,
-        response: response? response : "Cannot upload image"
+        success: response? true : false,
+        mes: response? 'Add variant successfully' : "Cannot upload image"
     })
     
 })

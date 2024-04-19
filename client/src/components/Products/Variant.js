@@ -41,10 +41,22 @@ const Variant = ({variant, setVariant, render}) => {
       if(data.images) {
         for (let image of data.images) formData.append('images', image)
       }
-      dispatch(showModal({isShowModal: true, modalChildren: <Loading />}))
+      // dispatch(showModal({isShowModal: true, modalChildren: <Loading />}))
       const response = await apiAddVariant(formData, variant._id)
-      dispatch(showModal({isShowModal: false, modalChildren: null}))
-      console.log(response)
+      // dispatch(showModal({isShowModal: false, modalChildren: null}))
+      if(response.success){
+        console.log('successfully')
+        toast.success(response.mes)
+        // reset()
+        // setPreview({
+        //   thumb: '',
+        //   images: []
+        // })
+      }
+      else{
+        console.log("failed")
+        // toast.error(response.mes)
+      }
     }
   }
   const handlePreviewThumb = async(file) => {
@@ -56,7 +68,7 @@ const Variant = ({variant, setVariant, render}) => {
     const imagesPreview = []
     for(let i of files){
       if(i.type !== 'image/png' && i.type !== 'image/jpeg'){
-        toast.warning('The file sent is not a JPG or PNG')
+       // toast.warning('The file sent is not a JPG or PNG')
         return
       }
       const base64 = await getBase64(i)
@@ -79,7 +91,7 @@ const Variant = ({variant, setVariant, render}) => {
     <div className='w-full'>
       <h1 className='h-[75px] flex justify-between items-center text-3xl font-bold px-4 border-b'>
           <span>Customize Variant</span>
-          <span className='text-main text-lg hover:underline cursor-pointer' onClick={()=>{setVariant(null)}}>Cancel</span>
+          <span className='text-main text-lg hover:underline cursor-pointer' onClick={()=>{setVariant(null)}}>Back</span>
       </h1>
       <div className='p-4 w-full'>
         <form onSubmit={handleSubmit(handleAddVariant)} className='p-4 w-full flex flex-col gap-4'>
@@ -144,7 +156,7 @@ const Variant = ({variant, setVariant, render}) => {
           <div className='flex flex-col gap-2 mt-8'>
             <label className='font-semibold' htmlFor='product'>Upload image of product</label>
             <input 
-              {...register('images')}
+              {...register('images', {required: 'Need upload image of product'})}
               type='file' 
               id='product' 
               multiple

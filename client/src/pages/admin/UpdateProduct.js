@@ -8,6 +8,7 @@ import {apiUpdateProduct} from 'apis/product'
 import { showModal } from 'store/app/appSlice'
 
 const UpdateProduct = ({editProduct, render, setEditProduct}) => {
+  console.log('update product')
   const {categories} = useSelector(state => state.app)
   const dispatch = useDispatch()
 
