@@ -5,6 +5,7 @@ export {default as Footer} from './Footer/Footer'
 
 export {default as Sidebar} from './SideBar/Sidebar'
 export {default as AdminSideBar} from './SideBar/AdminSideBar'
+export {default as UserSideBar} from './SideBar/UserSideBar'
 
 export {default as Banner} from './Common/Banner'
 export {default as Countdown} from './Common/Countdown'
