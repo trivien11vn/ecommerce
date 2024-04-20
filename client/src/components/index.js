@@ -25,6 +25,7 @@ export {default as FeaturedProduct} from './Products/FeaturedProduct'
 export {default as ProductCard} from './Products/ProductCard'
 export {default as ProductExtra} from './Products/ProductExtra'
 export {default as ProductInformation} from './Products/ProductInformation'
+export {default as QuickView} from './Products/QuickView'
 
 export {default as SelectOption} from './Search/SelectOption'
 export {default as SearchItem} from './Search/SearchItem'

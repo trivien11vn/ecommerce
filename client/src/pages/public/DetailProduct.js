@@ -19,14 +19,18 @@ const settings = {
 };
 
 
-const DetailProduct = () => {
-  const {pid, title, category} =useParams()
+const DetailProduct = ({isQuickView, data}) => {
+  const params =useParams()
   const [product, setProduct] = useState(null)
   const [quantity, setQuantity] = useState(1)
   const [productCate, setProductCate] = useState(null)
 
+  const [category, setCategory] = useState(null)
+
   const [variant, setVariant] = useState(null)
   const [currentImage, setCurrentImage] = useState(null)
+
+  const [pid, setPid] = useState(null)
 
   const [update, setUpdate] = useState(false)
   const reRender = useCallback(() => {
@@ -41,6 +45,18 @@ const DetailProduct = () => {
     color: ''
   })
 
+  useEffect(() => {
+    if(data){
+      setPid(data.pid)
+      setCategory(data.category)
+    }
+    else if(params){
+      setPid(params.pid)
+      setCategory(params.category)
+    }
+
+  }, [data, params])
+  
   useEffect(() => {
     if(variant){
       setCurrentProduct({
@@ -63,7 +79,9 @@ const DetailProduct = () => {
   }, [variant])
   
   const fetchProductData = async ()=>{
+    console.log('--get product--')
     const response = await apiGetOneProduct(pid)
+    console.log(response)
     if(response.success){
       setProduct(response?.product)
       setCurrentImage(response?.product?.thumb)
@@ -115,16 +133,17 @@ const DetailProduct = () => {
   },[quantity])
 
   console.log(product)
+  console.log(currentProduct?.images?.length)
   return (
-    <div className='w-full'> 
-      <div className='h-[81px] flex items-center justify-center bg-gray-100'>
+    <div className={clsx('w-full')}> 
+      {!isQuickView && <div className='h-[81px] flex items-center justify-center bg-gray-100'>
         <div className='w-main'>
-          <h3 className='font-semibold'>{currentProduct?.title || title}</h3>
-          <Breadcrumb title={currentProduct?.title || title} category={category} />
+          <h3 className='font-semibold'>{currentProduct?.title || product?.title}</h3>
+          <Breadcrumb title={currentProduct?.title || product?.title} category={category} />
         </div>
-      </div>
-      <div className='w-main m-auto mt-4 flex'>
-        <div className='flex flex-col gap-4 w-2/5'>
+      </div>}
+      <div onClick={e => e.stopPropagation()} className={clsx('bg-white m-auto mt-4 flex', isQuickView ? 'max-w-[900px] gap-16 p-8 max-h-[80vh] overflow-y-auto': 'w-main')}>
+        <div className={clsx('flex flex-col gap-4', isQuickView ? 'w-1/2' : 'w-2/5')}>
           <div className='h-[458px] w-[458px] border overflow-hidden flex items-center'>
             <ReactImageMagnify {...{
               smallImage: {
@@ -142,7 +161,7 @@ const DetailProduct = () => {
           {/* <img src={product?.image} alt='product' className='border h-[458px] w-[458px] object-cover' /> */}
           <div className='w-[458px]'>
             <Slider className='image_slider flex gap-2'{...settings}>
-              {currentProduct?.images?.length === 0 && product?.image?.map(el => (
+              {!currentProduct?.images && product?.image?.map(el => (
                 <div key={el}>
                   <img onClick={e=> handleClickImage(e,el)} src={el} alt="sup_product" className='cursor-pointer border h-[141px] w-[141px] object-cover'/>
                 </div>
@@ -156,7 +175,7 @@ const DetailProduct = () => {
             </Slider>
           </div>
         </div>
-        <div className='w-2/5 pr-[24px] flex flex-col gap-4'>
+        <div className={clsx('pr-[24px] flex flex-col gap-4', isQuickView  ? 'w-1/2' : 'w-2/5')}>
           <div className='flex items-center justify-between'>
             <h2 className='text-[30px] font-semibold'>
               {`${formatPrice(formatPricee(currentProduct?.price || product?.price))} VNĐ`}
@@ -225,20 +244,27 @@ const DetailProduct = () => {
             </Button>
           </div>
         </div>
-        <div className='w-1/5'> 
-          {productExtra.map(el =>(
-            <ProductExtra key={el.id} title={el.title} icon={el.icon} sup={el.sup}/>
-          ))}
-        </div>
+        {!isQuickView && 
+          <div className='w-1/5'> 
+            {productExtra.map(el =>(
+              <ProductExtra key={el.id} title={el.title} icon={el.icon} sup={el.sup}/>
+            ))}
+          </div>
+        }
       </div>
-      <div className='w-main m-auto mt-[8px]'>
+
+      {!isQuickView && <div className='w-main m-auto mt-[8px]'>
         <ProductInformation ratings={product?.rating} totalRatings={product?.totalRatings} nameProduct={product?.title} pid={product?._id} reRender={reRender}/>
-      </div>
-      <div className='w-main m-auto mt-[8px]'>
-        <h3 className='text-[20px] font-semibold py-[15px] border-b-2 border-main'>OTHER CUSTOMERS ALSO BUY:</h3>
-        <CustomSlider products={productCate} normal={true}/>
-      </div>
-      <div className='h-[100px] w-full'></div>
+      </div>}
+
+      {!isQuickView && 
+      <>
+        <div className='w-main m-auto mt-[8px]'>
+          <h3 className='text-[20px] font-semibold py-[15px] border-b-2 border-main'>OTHER CUSTOMERS ALSO BUY:</h3>
+          <CustomSlider products={productCate} normal={true}/>
+        </div>
+        <div className='h-[100px] w-full'></div>
+      </>}
     </div>
   )
 }

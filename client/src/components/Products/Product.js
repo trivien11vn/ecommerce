@@ -3,14 +3,14 @@ import {formatPrice} from 'ultils/helper'
 import label from 'assets/label.png'
 import label_trend from 'assets/label_trending.png'
 import {renderStarfromNumber} from 'ultils/helper'
-import {SelectOption} from '../index'
+import {SelectOption} from 'components'
 import icons from 'ultils/icon'
-import {Link} from 'react-router-dom'
-import path from 'ultils/path'
 import withBaseComponent from 'hocs/withBaseComponent'
+import { showModal } from 'store/app/appSlice'
+import { DetailProduct } from 'pages/public'
 const {FaEye, MdMenu, FaHeart} = icons
 
-const Product = ({productData, isNew, normal, navigate}) => {
+const Product = ({productData, isNew, normal, navigate, dispatch}) => {
   const [isShowOption, setIsShowOption] = useState(false)
   const handleClickOptions = (flag) => {
     if(flag === 'Menu'){
@@ -20,7 +20,7 @@ const Product = ({productData, isNew, normal, navigate}) => {
       console.log('WishList')
     }
     if(flag === 'Eye'){
-      console.log('QuickView')
+      dispatch(showModal({isShowModal: true, modalChildren: <DetailProduct data={{pid: productData?._id, category: productData?.category}} isQuickView={true} />}))
     }
   } // handleClickOptions
 
