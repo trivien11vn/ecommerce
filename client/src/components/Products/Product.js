@@ -7,14 +7,28 @@ import {SelectOption} from '../index'
 import icons from 'ultils/icon'
 import {Link} from 'react-router-dom'
 import path from 'ultils/path'
+import withBaseComponent from 'hocs/withBaseComponent'
 const {FaEye, MdMenu, FaHeart} = icons
-const Product = ({productData, isNew, normal}) => {
+
+const Product = ({productData, isNew, normal, navigate}) => {
   const [isShowOption, setIsShowOption] = useState(false)
+  const handleClickOptions = (flag) => {
+    if(flag === 'Menu'){
+      navigate(`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData.title}`)
+    }
+    if(flag === 'Heart'){
+      console.log('WishList')
+    }
+    if(flag === 'Eye'){
+      console.log('QuickView')
+    }
+  } // handleClickOptions
+
   return (
     <div className='w-full text-base px-[10px]'>
-      <Link 
-        to = {`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData.title}`}
-        className='w-full border p-[15px] flex flex-col items-center' 
+      <div 
+        onClick={()=> navigate(`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData.title}`)}
+        className='w-full border p-[15px] flex flex-col items-center cursor-pointer' 
         onMouseEnter = {e => {
           e.stopPropagation();
           setIsShowOption(true)
@@ -26,9 +40,9 @@ const Product = ({productData, isNew, normal}) => {
       >
         <div className='w-full relative'>
           {isShowOption && <div className='absolute bottom-[-10px] left-0 right-0 flex justify-center gap-2 animate-slide-top'>
-            <SelectOption icon={<FaHeart />}/>
-            <SelectOption icon={<MdMenu />}/>
-            <SelectOption icon={<FaEye />}/>
+            <span onClick={(e)=>{e.stopPropagation(); handleClickOptions('Heart')}}><SelectOption icon={<FaHeart />}/></span>
+            <span onClick={(e)=>{e.stopPropagation(); handleClickOptions('Menu')}}><SelectOption icon={<MdMenu />}/></span>
+            <span onClick={(e)=>{e.stopPropagation(); handleClickOptions('Eye')}}><SelectOption icon={<FaEye />}/></span>
           </div>}
           <img src={productData?.thumb||'https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png'} 
           className='w-[243px] h-[243px] object-cover'/>
@@ -42,9 +56,9 @@ const Product = ({productData, isNew, normal}) => {
           <span className='line-clamp-1'>{productData?.title}</span>
           <span>{`${formatPrice(productData?.price)} VND`}</span>
         </div>
-      </Link>
+      </div>
     </div>
   )
 }
 
-export default memo(Product)
+export default withBaseComponent(memo(Product))
