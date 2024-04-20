@@ -39,8 +39,8 @@ function App() {
         <Route path={path.CREATE_PRODUCT} element={<CreateProduct/>}/>
       </Route>
       <Route path={path.USER} element={<UserLayout />}>
-        <Route path={path.PERSONAL} element={<Personal/>}/>
-        <Route path={path.MYCART} element={<MyCart/>}/>
+        <Route path={path.PERSONAL} element={<Personal />}/>
+        <Route path={path.MYCART} element={<MyCart id='cart' />}/>
         <Route path={path.HISTORY} element={<History/>}/>
         <Route path={path.WISHLIST} element={<WishList/>}/>
       </Route>
