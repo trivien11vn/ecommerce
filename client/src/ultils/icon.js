@@ -28,6 +28,7 @@ import { MdDelete } from "react-icons/md";
 import { FaCopy } from "react-icons/fa";
 import { FaCartPlus } from "react-icons/fa";
 import { BsCartCheckFill } from "react-icons/bs";
+import { IoCloseSharp } from "react-icons/io5";
 
 const icons = {
     FaPhoneAlt,
@@ -59,7 +60,8 @@ const icons = {
     MdDelete,
     FaCopy,
     FaCartPlus,
-    BsCartCheckFill
+    BsCartCheckFill,
+    IoCloseSharp
 }
 
 export default icons;

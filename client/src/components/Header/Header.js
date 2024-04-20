@@ -3,15 +3,16 @@ import logo from "assets/logo_black.png"
 import icons from 'ultils/icon'
 import {Link} from 'react-router-dom'
 import path from 'ultils/path'
-import { useDispatch, useSelector } from 'react-redux'
+import {useSelector } from 'react-redux'
 import { logout } from "store/user/userSlice";
 import { useEffect } from "react";
+import withBaseComponent from "hocs/withBaseComponent";
+import { showCart } from "store/app/appSlice";
 
 const {FaPhoneAlt, MdEmail, FaUser, FaShoppingBag} = icons
-const Header = () => {
+const Header = ({dispatch}) => {
     const {current} = useSelector(state => state.user)
     const [isShowOptions, setIsShowOptions] = useState(false)
-    const dispatch = useDispatch()
     useEffect(() => {
         const handleClickOut = (el) => {
             const profile = document.getElementById('profile')
@@ -48,7 +49,7 @@ const Header = () => {
                 </div>
                 {current &&
                 <Fragment>
-                <div className="cursor-pointer flex items-center justify-center gap-2 px-6 border-r">
+                <div onClick={()=> dispatch(showCart())} className="cursor-pointer flex items-center justify-center gap-2 px-6 border-r">
                     <FaShoppingBag color='red' />
                     <span>{`${current?.cart?.length || 0} item(s)`}</span>
                 </div>
@@ -87,4 +88,4 @@ const Header = () => {
     )
 }
 
-export default memo(Header)
+export default withBaseComponent(memo(Header))

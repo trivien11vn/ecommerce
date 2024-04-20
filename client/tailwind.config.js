@@ -6,6 +6,9 @@ module.exports = {
       main: [ "Poppins", "sans-serif"]
     },
     extend: {
+      gridTemplateRows: {
+        '10': 'repeat(10, minmax(0, 1fr))',
+      },
       width:{
         main: '1220px'
       },
