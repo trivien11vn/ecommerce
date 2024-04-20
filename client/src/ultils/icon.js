@@ -26,6 +26,9 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdModeEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { FaCopy } from "react-icons/fa";
+import { FaCartPlus } from "react-icons/fa";
+import { BsCartCheckFill } from "react-icons/bs";
+
 const icons = {
     FaPhoneAlt,
     MdEmail,
@@ -54,7 +57,9 @@ const icons = {
     RiDeleteBin6Line,
     MdModeEdit,
     MdDelete,
-    FaCopy
+    FaCopy,
+    FaCartPlus,
+    BsCartCheckFill
 }
 
 export default icons;

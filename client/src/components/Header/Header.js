@@ -15,7 +15,7 @@ const Header = () => {
     useEffect(() => {
         const handleClickOut = (el) => {
             const profile = document.getElementById('profile')
-            if(!profile?.contains(el.target)){
+            if(!profile?.contains(el.target)){  
                 setIsShowOptions(false)
             }
         }
@@ -50,7 +50,7 @@ const Header = () => {
                 <Fragment>
                 <div className="cursor-pointer flex items-center justify-center gap-2 px-6 border-r">
                     <FaShoppingBag color='red' />
-                    <span>0 item(s)</span>
+                    <span>{`${current?.cart?.length || 0} item(s)`}</span>
                 </div>
 
                 <div

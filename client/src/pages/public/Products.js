@@ -4,6 +4,8 @@ import { Breadcrumb, Product, SearchItem, InputSelect, Pagination} from '../../c
 import { apiGetProduct } from '../../apis'
 import Masonry from 'react-masonry-css'
 import { sorts } from '../../ultils/constant'
+import clsx from 'clsx'
+import { useSelector } from 'react-redux'
 
 const breakpointColumnsObj = {
   default: 4,
@@ -18,10 +20,12 @@ const Products = () => {
   const [active, setActive] = useState(null)
   const [params] = useSearchParams()
   const [sort, setSort] = useState('')
-
   const {category} = useParams()
+  const {isShowModal} = useSelector(state => state.app)
+
+
   const fetchProductCategories = async (queries) =>{
-    const response = await apiGetProduct(queries)
+    const response = await apiGetProduct({...queries, category})
     if(response.success) setProducts(response)
   }
 
@@ -91,7 +95,7 @@ const Products = () => {
           </div>
         </div>
       </div>
-      <div className='mt-8 w-main m-auto'>
+      <div className={clsx('mt-8 w-main m-auto', isShowModal ? 'hidden' : '')}>
         <Masonry
           breakpointCols={breakpointColumnsObj}
           className="my-masonry-grid flex mx-[-10px]"

@@ -8,13 +8,45 @@ import icons from 'ultils/icon'
 import withBaseComponent from 'hocs/withBaseComponent'
 import { showModal } from 'store/app/appSlice'
 import { DetailProduct } from 'pages/public'
-const {FaEye, MdMenu, FaHeart} = icons
+import { apiUpdateCart } from 'apis'
+import { toast } from 'react-toastify'
+import { getCurrent } from 'store/user/asyncAction'
+import { useSelector } from 'react-redux'
+import Swal from 'sweetalert2'
+import path from 'ultils/path'
+const {FaEye, FaHeart, FaCartPlus, BsCartCheckFill} = icons
 
 const Product = ({productData, isNew, normal, navigate, dispatch}) => {
   const [isShowOption, setIsShowOption] = useState(false)
-  const handleClickOptions = (flag) => {
-    if(flag === 'Menu'){
-      navigate(`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData.title}`)
+  const {current} = useSelector(state => state.user)
+
+  const handleClickOptions = async (flag) => {
+    if(flag === 'Cart'){
+      if(!current){
+        return Swal.fire({
+          title: "You haven't logged in",
+          text: 'Please login and try again',
+          icon: 'warning',
+          showConfirmButton: true,
+          showCancelButton: true,
+          confirmButtonText: 'Go to Login',
+          cancelButtonText: 'Not now',                
+        }).then((rs)=>{
+          if(rs.isConfirmed){
+            navigate(`/${path.LOGIN}`)
+          }
+        })
+      }
+      console.log(productData)
+      console.log({pid: productData._id, color: productData.color })
+      const response = await apiUpdateCart({pid: productData._id, color: productData.color })
+      if(response.success){
+        toast.success(response.mes)
+        dispatch(getCurrent())
+      }
+      else{
+        toast.error(response.mes)
+      }
     }
     if(flag === 'Heart'){
       console.log('WishList')
@@ -30,7 +62,7 @@ const Product = ({productData, isNew, normal, navigate, dispatch}) => {
         onClick={()=> navigate(`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData.title}`)}
         className='w-full border p-[15px] flex flex-col items-center cursor-pointer' 
         onMouseEnter = {e => {
-          e.stopPropagation();
+          // e.stopPropagation();
           setIsShowOption(true)
         }}
         onMouseLeave = {e => {
@@ -40,9 +72,14 @@ const Product = ({productData, isNew, normal, navigate, dispatch}) => {
       >
         <div className='w-full relative'>
           {isShowOption && <div className='absolute bottom-[-10px] left-0 right-0 flex justify-center gap-2 animate-slide-top'>
-            <span onClick={(e)=>{e.stopPropagation(); handleClickOptions('Heart')}}><SelectOption icon={<FaHeart />}/></span>
-            <span onClick={(e)=>{e.stopPropagation(); handleClickOptions('Menu')}}><SelectOption icon={<MdMenu />}/></span>
-            <span onClick={(e)=>{e.stopPropagation(); handleClickOptions('Eye')}}><SelectOption icon={<FaEye />}/></span>
+            <span title='Add to WishList' onClick={(e)=>{e.stopPropagation(); handleClickOptions('Heart')}}><SelectOption icon={<FaHeart />}/></span>
+            {
+              current?.cart?.some(el => el.product === productData._id) ? 
+              <span title='Added'><SelectOption icon={<BsCartCheckFill color='green' />}/></span>
+              :
+              <span title='Add to Cart' onClick={(e)=>{e.stopPropagation(); handleClickOptions('Cart')}}><SelectOption icon={<FaCartPlus />}/></span>
+            }
+            <span title='Quick View' onClick={(e)=>{e.stopPropagation(); handleClickOptions('Eye')}}><SelectOption icon={<FaEye />}/></span>
           </div>}
           <img src={productData?.thumb||'https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png'} 
           className='w-[243px] h-[243px] object-cover'/>

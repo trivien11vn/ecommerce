@@ -142,7 +142,7 @@ const DetailProduct = ({isQuickView, data}) => {
           <Breadcrumb title={currentProduct?.title || product?.title} category={category} />
         </div>
       </div>}
-      <div onClick={e => e.stopPropagation()} className={clsx('bg-white m-auto mt-4 flex', isQuickView ? 'max-w-[900px] gap-16 p-8 max-h-[80vh] overflow-y-auto': 'w-main')}>
+      <div onClick={e => e.stopPropagation()} className={clsx('bg-white m-auto mt-4 flex', isQuickView ? 'max-w-[900px] gap-16 p-8 max-h-[90vh] overflow-y-auto': 'w-main')}>
         <div className={clsx('flex flex-col gap-4', isQuickView ? 'w-1/2' : 'w-2/5')}>
           <div className='h-[458px] w-[458px] border overflow-hidden flex items-center'>
             <ReactImageMagnify {...{
