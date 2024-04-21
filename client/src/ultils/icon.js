@@ -29,6 +29,8 @@ import { FaCopy } from "react-icons/fa";
 import { FaCartPlus } from "react-icons/fa";
 import { BsCartCheckFill } from "react-icons/bs";
 import { IoCloseSharp } from "react-icons/io5";
+import { FaTrashCan } from "react-icons/fa6";
+
 
 const icons = {
     FaPhoneAlt,
@@ -61,7 +63,8 @@ const icons = {
     FaCopy,
     FaCartPlus,
     BsCartCheckFill,
-    IoCloseSharp
+    IoCloseSharp,
+    FaTrashCan
 }
 
 export default icons;

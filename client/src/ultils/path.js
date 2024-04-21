@@ -1,4 +1,5 @@
 const path = {
+    //Public
     PUBLIC: '/',
     HOME: '',
     ALL: '*',
@@ -10,6 +11,7 @@ const path = {
     DETAIL_PRODUCT__CATEGORY__PID__TITLE: ':category/:pid/:title',
     FINAL_REGISTER: 'final_register/:status',
     RESET_PASSWORD: 'reset_password/:token',
+    DETAIL_CART: 'detail_cart',
 
 
     //Admin

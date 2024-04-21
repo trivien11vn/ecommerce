@@ -57,8 +57,8 @@ export const apiUpdateCart = (data) => axios({
     data
 })
 
-export const removeCart = (pid) => axios({
-    url: '/user/remove-cart'+pid,
+export const apiRemoveCart = (pid) => axios({
+    url: '/user/remove-cart/'+pid,
     method: 'delete',
 })
 

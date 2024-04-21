@@ -401,6 +401,7 @@ const updateCart = asyncHandler(async (req, res) => {
 
 //remove product from cart
 const removeProductFromCart = asyncHandler(async (req, res) => {
+    console.log('removeProductFromCart')
     const {_id} = req.user
     const {pid} = req.params
     const user = await User.findById(_id).select('cart')
