@@ -375,22 +375,26 @@ const updateUserAddress = asyncHandler(async (req, res) => {
 // update cart
 const updateCart = asyncHandler(async (req, res) => {
     const {_id} = req.user
-    const {pid, quantity = 1, color} = req.body
-    if(!pid || !color) {
+    const {pid, quantity = 1, color, price, thumb, title} = req.body
+    if(!pid || !color || !price || !thumb|| !title) {
         throw new Error("Missing input")
     }
     else{
         const user = await User.findById(_id).select('cart')
-        const alreadyProduct = user?.cart.find(e1 => e1.product.toString() === pid)
+        const alreadyProduct = user?.cart.find(e1 => e1.product.toString() === pid && e1.color === color)
+
         if(alreadyProduct){
-            const response = await User.updateOne({cart:{$elemMatch: alreadyProduct}}, {$set: {"cart.$.quantity": quantity, "cart.$.color": color}},{new:true})
+            console.log('Already')
+            const response = await User.updateOne({cart:{$elemMatch: alreadyProduct}}, {$set: {"cart.$.quantity": quantity, "cart.$.price": price, "cart.$.thumb": thumb, "cart.$.title": title}},{new:true})
             return res.status(200).json({
                 success: response ? true : false,
                 mes: response ? 'Updated your cart' : "Something went wrong"
             })     
         }
-        else{
-            const response = await User.findByIdAndUpdate(_id,{$push:{cart:{product:pid, quantity:quantity, color:color}}},{new: true})
+
+        // neu sp chua them vao gio hang || sp da them nhung khac color
+        else {
+            const response = await User.findByIdAndUpdate(_id,{$push:{cart:{product:pid, quantity, color, price, thumb, title}}},{new: true})
             return res.status(200).json({
                 success: response ? true : false,
                 mes: response ? 'Updated your cart' : "Something went wrong"
@@ -403,9 +407,9 @@ const updateCart = asyncHandler(async (req, res) => {
 const removeProductFromCart = asyncHandler(async (req, res) => {
     console.log('removeProductFromCart')
     const {_id} = req.user
-    const {pid} = req.params
+    const {pid, color} = req.params
     const user = await User.findById(_id).select('cart')
-    const alreadyProduct = user?.cart.find(e1 => e1.product.toString() === pid)
+    const alreadyProduct = user?.cart.find(e1 => e1.product.toString() === pid && e1.color === color)
     if(!alreadyProduct){
         return res.status(200).json({
             success: true,
@@ -413,7 +417,7 @@ const removeProductFromCart = asyncHandler(async (req, res) => {
         })
     }
     else{
-        const response = await User.findByIdAndUpdate(_id,{$pull:{cart:{product:pid}}},{new: true})
+        const response = await User.findByIdAndUpdate(_id,{$pull:{cart:{product:pid, color}}},{new: true})
         return res.status(200).json({
             success: response ? true : false,
             mes: response ? 'Deleted successfully' : "Something went wrong"

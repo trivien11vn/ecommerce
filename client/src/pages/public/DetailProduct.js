@@ -67,6 +67,7 @@ const DetailProduct = ({isQuickView, data, location, dispatch, navigate}) => {
   
   useEffect(() => {
     if(variant){
+      console.log(product?.variants?.find(el => el.sku === variant))
       setCurrentProduct({
         title: product?.variants?.find(el => el.sku === variant)?.title,
         color: product?.variants?.find(el => el.sku === variant)?.color,
@@ -160,7 +161,15 @@ const DetailProduct = ({isQuickView, data, location, dispatch, navigate}) => {
         }
       })
     }
-    const response = await apiUpdateCart({pid, color: currentProduct.color, quantity})
+    console.log({currentProduct, product})
+    const response = await apiUpdateCart({
+        pid, 
+        color: currentProduct?.color || product?.color, 
+        quantity, 
+        price: currentProduct?.price || product?.price, 
+        thumb: currentProduct?.thumb || product?.thumb,
+        title: currentProduct?.title || product?.title,
+      })
     if(response.success){
       toast.success(response.mes)
       dispatch(getCurrent())
@@ -257,7 +266,8 @@ const DetailProduct = ({isQuickView, data, location, dispatch, navigate}) => {
               {
                 product?.variants?.map(el=>(
                   <div 
-                  onClick={() =>  setVariant(el.sku)} 
+                  key={el?.sku}
+                  onClick={() =>  setVariant(el?.sku)} 
                   className= {clsx('flex items-center gap-2 p-2 border cursor-pointer', variant === el?.sku && 'border-red-500')}>
                     <img src={el?.thumb} alt='thumb' className='w-16 h-16 border rounded-md object-cover'></img>
                     <span className='flex flex-col'>

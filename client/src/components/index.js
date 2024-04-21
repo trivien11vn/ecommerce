@@ -27,6 +27,7 @@ export {default as ProductExtra} from './Products/ProductExtra'
 export {default as ProductInformation} from './Products/ProductInformation'
 export {default as QuickView} from './Products/QuickView'
 export {default as Cart} from './Products/Cart'
+export {default as OrderItem} from './Products/OrderItem'
 
 export {default as SelectOption} from './Search/SelectOption'
 export {default as SearchItem} from './Search/SearchItem'
