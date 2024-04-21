@@ -1,12 +1,17 @@
-import { Breadcrumb, Button, SelectQuantity, OrderItem} from 'components'
+import { Breadcrumb, Button, OrderItem} from 'components'
 import withBaseComponent from 'hocs/withBaseComponent'
-import React, { memo, useCallback, useState } from 'react'
+import React, { memo} from 'react'
 import { useSelector } from 'react-redux'
 import { formatPrice, formatPricee } from 'ultils/helper'
 
 
 const DetailCart = ({location}) => {
-    const {current} = useSelector(state => state.user)
+    const {currentCart} = useSelector(state => state.user)
+
+    // const handleChangeQuantity = (pid, quantity, color) => { 
+    //     dispatch(updateCart({pid, quantity, color}))
+    //     console.log(currentCart)
+    //  }
 
   return (
     <div className='w-full'>
@@ -22,7 +27,7 @@ const DetailCart = ({location}) => {
             <span className='col-span-1 w-full text-center'>Quantity</span>
             <span className='col-span-3 w-full text-center'>Price</span>
         </div>
-        {current?.cart?.map(el=>(
+        {currentCart?.map(el=>(
            <OrderItem key={el._id} el={el}/>
         ))}
         </div>
@@ -33,7 +38,7 @@ const DetailCart = ({location}) => {
                 </span>
                 <span className='text-main font-semibold text-lg'>
                     {
-                        `${formatPrice(current?.cart?.reduce((sum,el)=> +el?.price+sum, 0))} VND`
+                        `${formatPrice(currentCart?.reduce((sum,el)=> +el?.price * +el?.quantity +sum, 0))} VND`
                     }
                 </span>
             </span>

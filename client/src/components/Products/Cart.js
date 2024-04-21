@@ -12,7 +12,7 @@ import path from 'ultils/path'
 
 const {IoCloseSharp, FaTrashCan} = icons
 const Cart = ({dispatch, navigate}) => {
-    const {current} = useSelector(state => state.user)
+    const {current, currentCart} = useSelector(state => state.user)
     const removeCart = async(pid, color) => {
         const response = await apiRemoveCart(pid,color)
         if(response.success){
@@ -20,7 +20,6 @@ const Cart = ({dispatch, navigate}) => {
         }
         
     }
-    console.log(current?.cart)
 
     return (
     <div onClick={e=> e.stopPropagation()} className='w-[400px] h-screen bg-black grid grid-rows-10 text-white p-4'>
@@ -29,15 +28,15 @@ const Cart = ({dispatch, navigate}) => {
             <span onClick={()=>{dispatch(showCart())}} className='p-2 cursor-pointer'><IoCloseSharp size={24}/></span>
         </header>
         <section className='row-span-7 flex flex-col gap-3 h-full max-h-full overflow-y-auto py-3'>
-            {!current?.cart && <span className='text-xs italic'>Your cart is empty</span>}
-            {current?.cart &&
-            current?.cart?.map(el=>(
+            {!currentCart && <span className='text-xs italic'>Your cart is empty</span>}
+            {currentCart &&
+                currentCart.map(el=>(
                 <div key={el?._id} className='flex items-center justify-between'>
                     <div className='flex gap-2'>
                         <img src={el?.thumb} alt='thumb' className='w-16 h-16 object-cover'></img>
                         <div className='flex flex-col gap-1'>
                             <span className='text-sm font-semibold'>{el?.title}</span>
-                            <span className='text-[10px]'>{el?.color}</span>
+                            <span className='text-[10px] font-extralight'>{`Quantity: ${el?.quantity} - Color: ${el?.color}`}</span>
                             <span className='text-sm'>{formatPrice(el?.price)+' VND'}</span>
                         </div>
                     </div>
@@ -50,7 +49,7 @@ const Cart = ({dispatch, navigate}) => {
         <div className='row-span-2 h-full flex flex-col justify-between'>
             <div className='flex items-center justify-between pt-4 border-t'>
                 <span>Subtotal:</span>
-                <span>{formatPrice(current?.cart?.reduce((sum,el)=>sum+Number(el?.price),0))+' VND'}</span>
+                <span>{formatPrice(currentCart.reduce((sum,el)=>sum+Number(el?.price)*Number(el?.quantity),0))+' VND'}</span>
             </div>
             <span className='text-center text-gray-700 italic text-xs'>Shipping, taxes, and discounts calculated at checkout.</span>
             
