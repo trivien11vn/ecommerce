@@ -30,7 +30,7 @@ const OrderItem = ({el, dispatch}) => {
     }, [quantity])
     
   return (
-    <div key={el._id} className='w-main mx-auto py-3 font-bold grid grid-cols-10 border-b'>
+    <div key={el._id} className='w-full py-3 font-bold grid grid-cols-10 border-b'>
     <span className='col-span-6 w-full'>
         <div className='flex gap-2 px-4 py-2'>
             <img src={el?.thumb} alt='thumb' className='w-28 h-28 object-cover'></img>

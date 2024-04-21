@@ -14,13 +14,15 @@ import { getCurrent } from 'store/user/asyncAction'
 import { useSelector } from 'react-redux'
 import Swal from 'sweetalert2'
 import path from 'ultils/path'
+import { createSearchParams } from 'react-router-dom'
 const {FaEye, FaHeart, FaCartPlus, BsCartCheckFill} = icons
 
-const Product = ({productData, isNew, normal, navigate, dispatch}) => {
+const Product = ({productData, isNew, normal, navigate, dispatch, location}) => {
   const [isShowOption, setIsShowOption] = useState(false)
   const {current} = useSelector(state => state.user)
 
   const handleClickOptions = async (flag) => {
+    console.log(productData)
     if(flag === 'Cart'){
       if(!current){
         return Swal.fire({
@@ -33,13 +35,22 @@ const Product = ({productData, isNew, normal, navigate, dispatch}) => {
           cancelButtonText: 'Not now',                
         }).then((rs)=>{
           if(rs.isConfirmed){
-            navigate(`/${path.LOGIN}`)
+            navigate({
+              pathname: `/${path.LOGIN}`,
+              search: createSearchParams({
+                redirect: location.pathname}).toString(),
+            })
           }
         })
       }
-      console.log(productData)
-      console.log({pid: productData._id, color: productData.color })
-      const response = await apiUpdateCart({pid: productData._id, color: productData.color })
+      const response = await apiUpdateCart({
+          pid: productData?._id, 
+          color: productData?.color, 
+          quantity: 1, 
+          price: productData?.price, 
+          thumb: productData?.thumb, 
+          title: productData?.title, 
+        })
       if(response.success){
         toast.success(response.mes)
         dispatch(getCurrent())

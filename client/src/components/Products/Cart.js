@@ -55,7 +55,7 @@ const Cart = ({dispatch, navigate}) => {
             
             <Button 
             handleOnclick={()=>{dispatch(showCart())
-                                navigate(`/${path.DETAIL_CART}`)}} 
+                                navigate(`/${path.USER}/${path.MYCART}`)}} 
             style='rounded-none w-full bg-main py-2'>
                 Shopping Cart
             </Button>

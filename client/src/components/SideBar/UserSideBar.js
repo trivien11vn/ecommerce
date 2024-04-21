@@ -6,6 +6,7 @@ import clsx from 'clsx'
 import icons from 'ultils/icon'
 import { useSelector } from 'react-redux'
 import avatarDefault from '../../assets/avatarDefault.png'
+import { FaHome } from "react-icons/fa";
 
 const activeStyle = 'px-4 py-2 flex items-center gap-2 text-gray-100 bg-blue-500'
 const notActiveStyle = 'px-4 py-2 flex items-center gap-2 hover:bg-blue-100'
@@ -42,6 +43,12 @@ const UserSideBar = () => {
               </NavLink>}
             </Fragment>
           ))}
+          <NavLink 
+            to={'/'}
+            className={({isActive})=> clsx(isActive && activeStyle, !isActive&& notActiveStyle)}>
+            <span><FaHome size={20}/></span>
+            <span>Back</span>
+          </NavLink>
         </div>
     </div>
   )

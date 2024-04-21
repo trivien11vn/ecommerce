@@ -1,4 +1,4 @@
-import React ,{useState, useEffect, useCallback, memo}from 'react'
+import React ,{useState, useEffect, useCallback, memo, useRef}from 'react'
 import {createSearchParams, useParams} from 'react-router-dom'
 import { apiGetOneProduct, apiGetProduct } from '../../apis/product'
 import {Breadcrumb, Button, SelectQuantity, ProductExtra, ProductInformation, CustomSlider} from '../../components'
@@ -27,24 +27,25 @@ const settings = {
 
 
 const DetailProduct = ({isQuickView, data, location, dispatch, navigate}) => {
+  const titleRef = useRef()
   const {current} = useSelector(state => state.user)
   const params =useParams()
   const [product, setProduct] = useState(null)
   const [quantity, setQuantity] = useState(1)
   const [productCate, setProductCate] = useState(null)
-
+  
   const [category, setCategory] = useState(null)
-
+  
   const [variant, setVariant] = useState(null)
   const [currentImage, setCurrentImage] = useState(null)
-
+  
   const [pid, setPid] = useState(null)
-
+  
   const [update, setUpdate] = useState(false)
   const reRender = useCallback(() => {
-      setUpdate(!update)
+    setUpdate(!update)
   },[update])
-
+  
   const [currentProduct, setCurrentProduct] = useState({
     title:'',
     thumb:'',
@@ -52,7 +53,22 @@ const DetailProduct = ({isQuickView, data, location, dispatch, navigate}) => {
     price:'',
     color: ''
   })
-
+  useEffect(() => {
+    if(pid){
+      fetchProductData()
+      fetchProductCate()
+    }
+    window.scrollTo(0,0)
+    titleRef.current.scrollIntoView({block: 'center'})
+    setCurrentProduct({
+      title:'',
+      thumb:'',
+      images: [],
+      price:'',
+      color: ''
+    })
+  }, [pid])
+  
   useEffect(() => {
     if(data){
       setPid(data.pid)
@@ -64,10 +80,10 @@ const DetailProduct = ({isQuickView, data, location, dispatch, navigate}) => {
     }
 
   }, [data, params])
+
   
   useEffect(() => {
     if(variant){
-      console.log(product?.variants?.find(el => el.sku === variant))
       setCurrentProduct({
         title: product?.variants?.find(el => el.sku === variant)?.title,
         color: product?.variants?.find(el => el.sku === variant)?.color,
@@ -88,9 +104,7 @@ const DetailProduct = ({isQuickView, data, location, dispatch, navigate}) => {
   }, [variant])
   
   const fetchProductData = async ()=>{
-    console.log('--get product--')
     const response = await apiGetOneProduct(pid)
-    console.log(response)
     if(response.success){
       setProduct(response?.product)
       setCurrentImage(response?.product?.thumb)
@@ -102,13 +116,7 @@ const DetailProduct = ({isQuickView, data, location, dispatch, navigate}) => {
       setProductCate(response.products)
     }
   }
-  useEffect(() => {
-    if(pid){
-      fetchProductData()
-      fetchProductCate()
-    }
-    window.scrollTo(0,0)
-  }, [pid])
+
   useEffect(() => {
     if(pid){
       fetchProductData()
@@ -161,7 +169,6 @@ const DetailProduct = ({isQuickView, data, location, dispatch, navigate}) => {
         }
       })
     }
-    console.log({currentProduct, product})
     const response = await apiUpdateCart({
         pid, 
         color: currentProduct?.color || product?.color, 
@@ -179,11 +186,12 @@ const DetailProduct = ({isQuickView, data, location, dispatch, navigate}) => {
     }
    }
 
+  console.log({currentProduct, product})
   
   return (
     <div className={clsx('w-full')}> 
       {!isQuickView && <div className='h-[81px] flex items-center justify-center bg-gray-100'>
-        <div className='w-main'>
+        <div ref={titleRef} className='w-main'>
           <h3 className='font-semibold'>{currentProduct?.title || product?.title}</h3>
           <Breadcrumb title={currentProduct?.title || product?.title} category={category} />
         </div>

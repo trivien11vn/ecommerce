@@ -12,7 +12,7 @@ const UserLayout = () => {
   }
 
   return (
-    <div className='flex'>
+    <div className='flex w-screen'>
       <UserSideBar />
       <div className='flex-auto bg-gray-100 min-h-screen'>
         <Outlet />

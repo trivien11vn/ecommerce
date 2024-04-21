@@ -12,6 +12,7 @@ const path = {
     FINAL_REGISTER: 'final_register/:status',
     RESET_PASSWORD: 'reset_password/:token',
     DETAIL_CART: 'detail_cart',
+    CHECKOUT: 'checkout',
 
 
     //Admin

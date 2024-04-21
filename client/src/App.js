@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {Route, Routes} from 'react-router-dom'
 import {Login,Home,Public,Service,DetailProduct,FAQ,Products,Blogs,Final_Register,ResetPassword,DetailCart} from 'pages/public'
 import { AdminLayout, ManageOrder, ManageProduct, ManageUser, CreateProduct, DashBoard} from 'pages/admin'
-import { UserLayout, MyCart, History, Personal, WishList} from 'pages/user'
+import { UserLayout, MyCart, History, Personal, WishList, Checkout} from 'pages/user'
 import path from './ultils/path'
 import {getCategories} from 'store/app/asyncAction'
 import {useDispatch, useSelector} from 'react-redux'
@@ -27,6 +27,7 @@ function App() {
       }
       {isShowModal && <Modal>{modalChildren}</Modal>}
      <Routes>
+      <Route path={path.CHECKOUT} element={<Checkout />} />
       <Route path={path.PUBLIC} element={<Public />}>
         <Route path={path.HOME} element={<Home />} />
         <Route path={path.BLOGS} element={<Blogs />} />
@@ -35,7 +36,7 @@ function App() {
         <Route path={path.OUR_SERVICES} element={<Service />} />
         <Route path={path.PRODUCTS} element={<Products />} />
         <Route path={path.RESET_PASSWORD} element={<ResetPassword />} />
-        <Route path={path.DETAIL_CART} element={<DetailCart />} />
+        {/* <Route path={path.DETAIL_CART} element={<DetailCart />} /> */}
         <Route path={path.ALL} element={<Home />} />
       </Route>
       <Route path={path.ADMIN} element={<AdminLayout />}>
@@ -47,7 +48,7 @@ function App() {
       </Route>
       <Route path={path.USER} element={<UserLayout />}>
         <Route path={path.PERSONAL} element={<Personal />}/>
-        <Route path={path.MYCART} element={<MyCart id='cart' />}/>
+        <Route path={path.MYCART} element={<DetailCart />}/>
         <Route path={path.HISTORY} element={<History/>}/>
         <Route path={path.WISHLIST} element={<WishList/>}/>
       </Route>
