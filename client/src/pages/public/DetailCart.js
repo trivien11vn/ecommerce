@@ -1,4 +1,4 @@
-import { Breadcrumb, SelectQuantity } from 'components'
+import { Breadcrumb, Button, SelectQuantity } from 'components'
 import withBaseComponent from 'hocs/withBaseComponent'
 import React, { memo, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -34,13 +34,14 @@ const DetailCart = ({location}) => {
                 <Breadcrumb category={location?.pathname.substring(1)} />
             </div>
         </div>
-        <div className='w-main mx-auto my-8 border py-3 font-bold grid grid-cols-10'>
+        <div className='flex flex-col border w-main mx-auto my-8'>
+        <div className='w-main mx-auto py-3 font-bold grid grid-cols-10 bg-gray-400'>
             <span className='col-span-6 w-full text-center'></span>
             <span className='col-span-1 w-full text-center'>Quantity</span>
             <span className='col-span-3 w-full text-center'>Price</span>
         </div>
         {current?.cart?.map(el=>(
-            <div key={el._id} className='w-main mx-auto my-8 border py-3 font-bold grid grid-cols-10'>
+            <div key={el._id} className='w-main mx-auto py-3 font-bold grid grid-cols-10 border-b'>
                 <span className='col-span-6 w-full'>
                     <div className='flex gap-2 h-full items-center'>
                         <img src={el?.product?.thumb} alt='thumb' className='w-28 h-28 object-cover'></img>
@@ -62,6 +63,25 @@ const DetailCart = ({location}) => {
                 </span>
             </div>
         ))}
+        </div>
+        <div className='w-main mx-auto flex flex-col justify-center items-end gap-3 mb-12'>
+            <span className='flex items-center gap-8 text-sm'>
+                <span>
+                    Subtotal
+                </span>
+                <span className='text-main font-semibold text-lg'>
+                    {
+                        `${formatPrice(current?.cart?.reduce((sum,el)=> +el?.product?.price+sum, 0))} VND`
+                    }
+                </span>
+            </span>
+            <span className='text-xs italic '>
+             Shipping, taxes, and discounts calculated at checkout.
+            </span>
+            <Button>
+                Checkout
+            </Button>
+        </div>
     </div>
   )
 }

@@ -2,7 +2,7 @@ import React ,{useState,useCallback,useEffect} from "react";
 import {InputField, Button, Loading} from '../../components'
 import { apiRegister, apiLogin, apiForgotPassword, apiFinalRegister} from "../../apis/user";
 import Swal from 'sweetalert2'
-import {useNavigate, Link} from 'react-router-dom'
+import {useNavigate, Link, useSearchParams} from 'react-router-dom'
 import path from "../../ultils/path";
 import { login } from "../../store/user/userSlice";
 
@@ -29,9 +29,10 @@ const Login = () => {
     const [isRegister, setIsRegister] = useState(false)
     const [email, setEmail] = useState('')
     const [token, setToken] = useState('')
+    const [searchParams] = useSearchParams()
+
     const handleForgotPassword = async() =>{
         const response = await apiForgotPassword({email})
-        console.log(response)
         if(response.success){
             toast.success(response.mes, {theme:"colored"})
         }
@@ -57,10 +58,10 @@ const Login = () => {
     const handleSubmit = useCallback(async() =>{
         const {firstName, lastName, mobile, ...data} = payload
         const invalid = isRegister? validate(payload, setInvalidField) : validate(data,setInvalidField)
-        console.log(invalid)
         if(invalid===0)
         {
             if(isRegister){
+                // call api to register
                 dispatch(showModal({isShowModal: true, modalChildren:<Loading />}))
                 const response = await apiRegister(payload)
                 dispatch(showModal({isShowModal: false, modalChildren:null}))
@@ -72,7 +73,7 @@ const Login = () => {
                 }
             }
             else{
-                //call api
+                // call api to login
                 const result = await apiLogin(data)
                 if(result.success){ 
                     dispatch(login({
@@ -80,7 +81,7 @@ const Login = () => {
                         token: result.accessToken,
                         userData: result.userData
                     }))
-                    navigate(`/${path.HOME}`)
+                    searchParams.get('redirect') ? navigate(searchParams.get('redirect')) : navigate(`/${path.HOME}`)
     
                 }
                 else{
@@ -88,7 +89,6 @@ const Login = () => {
                 }
             }
         }
-        console.log(payload)
     },[payload, isRegister])
 
     const finalRegister = async() => {
