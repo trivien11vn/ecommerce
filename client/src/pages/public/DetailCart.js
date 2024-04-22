@@ -9,17 +9,7 @@ import path from 'ultils/path'
 
 
 const DetailCart = ({dispatch}) => {
-    const {isLogin, currentCart} = useSelector(state => state.user)
-    useEffect(() => {
-      const setTimeoutId = setTimeout(()=>{
-        if(isLogin){
-          dispatch(getCurrent())
-        }
-      },300)
-      return () =>{
-        clearTimeout(setTimeoutId)
-      }
-    }, [dispatch, isLogin])
+    const {currentCart} = useSelector(state => state.user)
 
 
   return (
