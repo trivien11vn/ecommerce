@@ -15,6 +15,7 @@ export {default as SelectQuantity} from './Common/SelectQuantity'
 export {default as Loading} from './Common/Loading'
 export {default as Modal} from './Common/Modal'
 export {default as Paypal} from './Common/Paypal'
+export {default as Congratulation} from './Common/Congratulation'
 
 
 export {default as Navigation} from './Navigation/Navigation'
