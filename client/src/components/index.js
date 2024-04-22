@@ -14,6 +14,8 @@ export {default as Breadcrumb} from './Common/Breadcrumb'
 export {default as SelectQuantity} from './Common/SelectQuantity'
 export {default as Loading} from './Common/Loading'
 export {default as Modal} from './Common/Modal'
+export {default as Paypal} from './Common/Paypal'
+
 
 export {default as Navigation} from './Navigation/Navigation'
 
