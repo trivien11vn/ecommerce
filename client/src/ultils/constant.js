@@ -291,3 +291,14 @@ export const userSidebar = [
     },
 
 ]
+
+export const statusOrder = [
+    {
+        label: 'Canceled',
+        value: 'Canceled',
+    },
+    {
+        label: 'Successful',
+        value: 'Successful',
+    }
+]
