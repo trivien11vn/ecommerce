@@ -141,7 +141,7 @@ const getOneUser = asyncHandler(async(req, res)=>{
             path: 'product',
             select: 'title thumb price'
         }
-    })
+    }).populate('wishlist', 'title thumb price color')
     return res.status(200).json({
         success: user? true : false,
         res: user? user : "User not found"
@@ -434,6 +434,37 @@ const createUsers = asyncHandler(async(req, res)=>{
         user: response ? response : 'Something went wrong!'
     })
 })
+
+const updateWishlist = asyncHandler(async(req, res)=>{
+    const {pid} = req.params
+    console.log(pid)
+    const {_id} = req.user
+    if(!pid) {
+        throw new Error("Missing input")
+    }
+    const user = await User.findById(_id)
+    const alreadyWishList = user?.wishlist?.find(el => el.toString() === pid)
+    if(alreadyWishList){
+        const response = await User.findByIdAndUpdate(_id, {$pull: {wishlist: pid}},{new: true})
+        return res.status(200).json({
+            success: response ? true : false,
+            mes: response ? 'Updated your wishlist successfully' : 'Something went wrong'
+        })
+    }
+    else{
+        const response = await User.findByIdAndUpdate(_id, {$push: {wishlist: pid}},{new: true})
+        return res.status(200).json({
+            success: response ? true : false,
+            mes: response ? 'Updated your wishlist successfully' : 'Something went wrong'
+        })
+    }
+
+    const response = await User.create(users)
+    return res.status(200).json({
+        success: response ? true : false,
+        user: response ? response : 'Something went wrong!'
+    })
+})
 module.exports = {
     register,
     login,
@@ -450,5 +481,6 @@ module.exports = {
     updateCart,
     finalRegister,
     createUsers,
-    removeProductFromCart
+    removeProductFromCart,
+    updateWishlist
 }

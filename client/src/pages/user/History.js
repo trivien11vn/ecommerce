@@ -39,16 +39,14 @@ const History = ({navigate, location}) => {
   }
 
   useEffect(() => {
-    console.log(params)
     const pr = Object.fromEntries([...params])
-    console.log(pr)
     fetchOrders(pr)
   }, [params])
   console.log(status)
   
   return (
     <div className='w-full relative px-4'>
-      <header className='text-3xl font-semibold py-4 border-b border-b-blue-200'>History</header>
+      <header className='text-3xl font-semibold py-4 border-b border-b-gray-200'>History</header>
       <div className='flex w-full justify-end items-center px-4 '>
         <form className='w-[45%] grid grid-cols-2 gap-4'>
           <div className='col-span-1'>
@@ -79,7 +77,6 @@ const History = ({navigate, location}) => {
             <th className='text-center py-2'>Total Price</th>
             <th className='text-center py-2'>Status</th>
             <th className='text-center py-2'>Created At</th>
-            <th className='text-center py-2'>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -89,29 +86,23 @@ const History = ({navigate, location}) => {
               <td className='text-center py-2'>
                 <span className='flex flex-col gap-2'>
                   {el.products?.map(item=>(
-                    <span key={item?._id}>
-                      {`• ${item?.title} - ${item?.color} ✖ ${item?.quantity}`}
+                    <span className='flex items-center gap-2' key={item?._id}>
+                      <img src={item?.thumb} alt='thumbnail' className='w-12 h-12 rounded-md object-cover'></img>
+                      <span className='flex flex-col'>
+                        <span className='text-main font-semibold'>{item?.title}</span>
+                        <span className='flex items-center text-xs italic gap-2'>
+                          <span>Quantity: </span>
+                          <span>{item?.quantity}</span>
+                        </span>
+                      </span>
+                   
                     </span>
                   ))}
                 </span>
               </td>
-              <td className='text-center py-2'>{`${el?.total} $`}</td>
+              <td className='text-center py-2'>{`${el?.total} 💲`}</td>
               <td className='text-center py-2'>{el?.status}</td>
               <td className='text-center py-2'>{moment(el.createdAt).format('DD/MM/YYYY')}</td>
-              <td></td>
-              {/* <td className='text-center py-2'>{el.totalRatings}</td>
-              <td className='text-center py-2'>{el.variants?.length || 0}</td>
-              <td className='text-center py-2'>{moment(el.updatedAt).format('DD/MM/YYYY')}</td>
-              <td className='text-center py-2'>
-                <span onClick={() => setEditProduct(el)} 
-                className='inline-block hover:underline cursor-pointer text-blue-500 hover:text-orange-500 px-0.5'><MdModeEdit
-                size={24}/></span>
-                <span onClick={() => handleDeleteProduct(el._id)} 
-                className='inline-block hover:underline cursor-pointer text-blue-500 hover:text-orange-500 px-0.5'><MdDelete size={24}/></span>
-                <span onClick={() => setVariant(el)} 
-                className='inline-block hover:underline cursor-pointer text-blue-500 hover:text-orange-500 px-0.5'><FaCopy 
-                size={22}/></span>
-              </td>   */}
             </tr>
           ))}
         </tbody>

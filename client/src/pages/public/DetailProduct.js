@@ -59,7 +59,7 @@ const DetailProduct = ({isQuickView, data, location, dispatch, navigate}) => {
       fetchProductCate()
     }
     window.scrollTo(0,0)
-    titleRef.current.scrollIntoView({block: 'center'})
+    titleRef.current?.scrollIntoView({block: 'center'})
     setCurrentProduct({
       title:'',
       thumb:'',

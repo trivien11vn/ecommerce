@@ -6,6 +6,8 @@ import Masonry from 'react-masonry-css'
 import { sorts } from '../../ultils/constant'
 import clsx from 'clsx'
 import { useSelector } from 'react-redux'
+import withBaseComponent from 'hocs/withBaseComponent'
+import { getCurrent } from 'store/user/asyncAction'
 
 const breakpointColumnsObj = {
   default: 4,
@@ -14,7 +16,7 @@ const breakpointColumnsObj = {
   500: 1
 };
 
-const Products = () => {
+const Products = ({dispatch}) => {
   const navigate = useNavigate()
   const [products, setProducts] = useState(null)
   const [active, setActive] = useState(null)
@@ -31,6 +33,7 @@ const Products = () => {
     }
     const response = await apiGetProduct(queries)
     if(response.success) setProducts(response)
+    dispatch(getCurrent())
   }
 
   useEffect(() => {
@@ -125,4 +128,4 @@ const Products = () => {
   )
 }
 
-export default Products
+export default withBaseComponent(Products)

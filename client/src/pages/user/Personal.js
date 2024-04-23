@@ -68,7 +68,7 @@ const Personal = ({navigate, dispatch}) => {
   console.log(isDirty)
   return (
     <div className='w-full relative px-4'>
-      <header className='text-3xl font-semibold py-4 border-b border-b-blue-200'>Personal</header>
+      <header className='text-3xl font-semibold py-4 border-b border-b-gray-200'>Personal</header>
       <form onSubmit={handleSubmit(handleUpdateInfo)} className='w-3/5 mx-auto py-8 flex flex-col gap-4'>
         <div className='flex flex-col gap-2'>
           <span className='font-medium'>Avatar:</span>

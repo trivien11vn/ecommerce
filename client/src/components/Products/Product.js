@@ -8,16 +8,17 @@ import icons from 'ultils/icon'
 import withBaseComponent from 'hocs/withBaseComponent'
 import { showModal } from 'store/app/appSlice'
 import { DetailProduct } from 'pages/public'
-import { apiUpdateCart } from 'apis'
+import { apiUpdateCart, apiUpdateWishlist } from 'apis'
 import { toast } from 'react-toastify'
 import { getCurrent } from 'store/user/asyncAction'
 import { useSelector } from 'react-redux'
 import Swal from 'sweetalert2'
 import path from 'ultils/path'
 import { createSearchParams } from 'react-router-dom'
+import clsx from 'clsx'
 const {FaEye, FaHeart, FaCartPlus, BsCartCheckFill} = icons
 
-const Product = ({productData, isNew, normal, navigate, dispatch, location}) => {
+const Product = ({productData, isNew, normal, navigate, dispatch, location, isNotBorder}) => {
   const [isShowOption, setIsShowOption] = useState(false)
   const {current} = useSelector(state => state.user)
 
@@ -60,7 +61,15 @@ const Product = ({productData, isNew, normal, navigate, dispatch, location}) => 
       }
     }
     if(flag === 'Heart'){
-      console.log('WishList')
+      console.log(productData?._id)
+      const response = await apiUpdateWishlist({pid: productData?._id})
+      if(response.success){
+        dispatch(getCurrent())
+        toast.success(response.mes)
+      }
+      else{
+        toast.error(response.mes)
+      }
     }
     if(flag === 'Eye'){
       dispatch(showModal({isShowModal: true, modalChildren: <DetailProduct data={{pid: productData?._id, category: productData?.category}} isQuickView={true} />}))
@@ -71,7 +80,7 @@ const Product = ({productData, isNew, normal, navigate, dispatch, location}) => 
     <div className='w-full text-base px-[10px]'>
       <div 
         onClick={()=> navigate(`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData.title}`)}
-        className='w-full border p-[15px] flex flex-col items-center cursor-pointer' 
+        className={isNotBorder ? 'w-full p-[15px] flex flex-col items-center cursor-pointer' : 'w-full border p-[15px] flex flex-col items-center cursor-pointer'} 
         onMouseEnter = {e => {
           // e.stopPropagation();
           setIsShowOption(true)
@@ -83,7 +92,12 @@ const Product = ({productData, isNew, normal, navigate, dispatch, location}) => 
       >
         <div className='w-full relative'>
           {isShowOption && <div className='absolute bottom-[-10px] left-0 right-0 flex justify-center gap-2 animate-slide-top'>
-            <span title='Add to WishList' onClick={(e)=>{e.stopPropagation(); handleClickOptions('Heart')}}><SelectOption icon={<FaHeart />}/></span>
+            {
+              current?.wishlist?.some(el => el._id === productData._id) ? 
+              <span title='Wishlist' onClick={(e)=>{e.stopPropagation(); handleClickOptions('Heart')}}><SelectOption icon={<FaHeart color='#ff1493'/>}/></span>
+              :
+              <span title='Add to WishList' onClick={(e)=>{e.stopPropagation(); handleClickOptions('Heart')}}><SelectOption icon={<FaHeart />}/></span>
+            }
             {
               current?.cart?.some(el => el?.product?._id === productData._id) ? 
               <span title='Added'><SelectOption icon={<BsCartCheckFill color='green' />}/></span>
