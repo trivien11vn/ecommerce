@@ -2,22 +2,43 @@ import { Breadcrumb, Button, OrderItem} from 'components'
 import withBaseComponent from 'hocs/withBaseComponent'
 import React, { memo, useEffect} from 'react'
 import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, createSearchParams } from 'react-router-dom'
 import { getCurrent } from 'store/user/asyncAction'
+import Swal from 'sweetalert2'
 import { formatPrice, formatPricee } from 'ultils/helper'
 import path from 'ultils/path'
 
 
-const DetailCart = ({dispatch}) => {
-    const {currentCart} = useSelector(state => state.user)
+const DetailCart = ({location, navigate}) => {
+    const {currentCart, current} = useSelector(state => state.user)
 
-
-  return (
+    const handleSubmit = () => {
+        if(!current?.address){
+            return Swal.fire({
+                icon: 'info',
+                title: 'Update your address',
+                text: 'You need address to checkout',
+                showCancelButton: true,
+                showConfirmButton: true,
+                confirmButtonText: 'Update address',
+                cancelButtonText: 'Cancel'
+            }).then((rs) => { 
+                if(rs.isConfirmed){
+                    navigate({
+                        pathname:  `/${path.USER}/${path.PERSONAL}`,
+                        search: createSearchParams({redirect: location.pathname}).toString()
+                    })
+                }
+             })
+        }
+        else{
+            window.open(`/${path.CHECKOUT}`, '_blank')
+        }
+    }
+    return (
     <div className='w-full'>
-        <div className='h-[81px] flex items-center justify-center bg-gray-100'>
-            <div className=''>
-                <h3 className='font-semibold uppercase text-2xl'>My Cart</h3>
-            </div>
+        <div className='relative px-4'>
+            <h3 className='text-3xl font-semibold py-4 border-b border-b-blue-200'>My Cart</h3>
         </div>
         <div className='flex flex-col border mx-auto my-8'>
         <div className='w-full py-3 font-bold grid grid-cols-10 bg-gray-400'>
@@ -43,9 +64,12 @@ const DetailCart = ({dispatch}) => {
             <span className='text-xs italic '>
              Shipping, taxes, and discounts calculated at checkout.
             </span>
-            <Link target='_blank' className='bg-main text-white px-4 py-2 rounded-md' to={`/${path.CHECKOUT}`}>
+            <Button handleOnclick={handleSubmit}>
                 Checkout
-            </Link>
+            </Button>
+            {/* <Link target='_blank' className='bg-main text-white px-4 py-2 rounded-md' to={`/${path.CHECKOUT}`}>
+                Checkout
+            </Link> */}
         </div>
     </div>
   )

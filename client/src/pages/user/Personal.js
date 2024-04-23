@@ -9,13 +9,16 @@ import { apiUpdateCurrent } from 'apis'
 import { getCurrent } from 'store/user/asyncAction'
 import { toast } from 'react-toastify'
 import { getBase64 } from 'ultils/helper'
+import { useSearchParams } from 'react-router-dom'
+import withBaseComponent from 'hocs/withBaseComponent'
 
-const Personal = () => {
+const Personal = ({navigate, dispatch}) => {
   const [previewImage, setPreviewImage] = useState('')
 
   const {register, formState:{errors, isDirty}, handleSubmit, reset, watch} = useForm()
   const {current} = useSelector(state => state.user)
-  const dispatch = useDispatch()
+  const [params] = useSearchParams()
+  
   const handleUpdateInfo = async(data)=>{
     const formData = new FormData()
     if(data.avatar.length > 0){
@@ -31,6 +34,9 @@ const Personal = () => {
     if(response.success){
       dispatch(getCurrent())
       toast.success(response.mes)
+      if(params?.get('redirect')){
+        navigate(params.get('redirect'))
+      }
     }
     else{
       toast.error(response.mes)
@@ -43,6 +49,7 @@ const Personal = () => {
       email: current?.email,
       mobile: current?.mobile,
       avatar: current?.avatar,
+      address: current?.address
     })
     setPreviewImage(current?.avatar)
   }, [current])
@@ -115,6 +122,16 @@ const Personal = () => {
             }
           }}
         />
+
+        <InputForm 
+          label = 'Address'
+          register={register}
+          errors={errors}
+          id = 'address'
+          validate = {{
+            required: 'Need fill this field',
+          }}
+        />
         <div className='flex items-center gap-2'>
           <span className='font-medium'>
             Account Status:
@@ -152,4 +169,4 @@ const Personal = () => {
   )
 }
 
-export default Personal
+export default withBaseComponent(Personal)

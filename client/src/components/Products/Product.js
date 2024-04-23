@@ -85,7 +85,7 @@ const Product = ({productData, isNew, normal, navigate, dispatch, location}) => 
           {isShowOption && <div className='absolute bottom-[-10px] left-0 right-0 flex justify-center gap-2 animate-slide-top'>
             <span title='Add to WishList' onClick={(e)=>{e.stopPropagation(); handleClickOptions('Heart')}}><SelectOption icon={<FaHeart />}/></span>
             {
-              current?.cart?.some(el => el.product === productData._id) ? 
+              current?.cart?.some(el => el?.product?._id === productData._id) ? 
               <span title='Added'><SelectOption icon={<BsCartCheckFill color='green' />}/></span>
               :
               <span title='Add to Cart' onClick={(e)=>{e.stopPropagation(); handleClickOptions('Cart')}}><SelectOption icon={<FaCartPlus />}/></span>

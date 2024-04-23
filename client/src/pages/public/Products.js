@@ -21,11 +21,15 @@ const Products = () => {
   const [params] = useSearchParams()
   const [sort, setSort] = useState('')
   const {category} = useParams()
+  console.log(category)
   const {isShowModal} = useSelector(state => state.app)
 
 
   const fetchProductCategories = async (queries) =>{
-    const response = await apiGetProduct({...queries, category})
+    if(category && category !== 'products'){
+      queries.category = category
+    }
+    const response = await apiGetProduct(queries)
     if(response.success) setProducts(response)
   }
 
