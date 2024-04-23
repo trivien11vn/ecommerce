@@ -37,6 +37,8 @@ const Products = ({dispatch}) => {
   }
 
   useEffect(() => {
+    console.log('chay qua ham nay ko')
+    window.scrollTo(0,0)
     const queries = Object.fromEntries([...params])
     let priceQuery =  {}
     if(queries.to && queries.from){
@@ -54,7 +56,6 @@ const Products = ({dispatch}) => {
     delete queries.to
     const q = {...priceQuery, ...queries}
     fetchProductCategories(q)
-    window.scrollTo(0,0)
   }, [params])
   
   const changeActive = useCallback((name)=>{

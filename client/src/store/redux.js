@@ -7,17 +7,25 @@ import {persistReducer, persistStore,FLUSH,REHYDRATE,PAUSE,PERSIST,PURGE,REGISTE
 
 
 const commonConfig = {
-  'key': 'shop/user',
   storage
 }
 const userConfig = {
   ...commonConfig,
-  whitelist: ['token', 'isLogin', 'current', 'currentCart']
+  whitelist: ['token', 'isLogin', 'current', 'currentCart'],
+  key: 'shop/user'
 }
+
+const productConfig = {
+  ...commonConfig,
+  whitelist: ['dealDaily'],
+  key: 'shop/deal'
+}
+
+
 export const store = configureStore({
   reducer: {
     app: appSlice,
-    product: productSlice,
+    product: persistReducer(productConfig, productSlice),
     user: persistReducer(userConfig,userSlice)
   },
   middleware: (getDefaultMiddleware) =>

@@ -3,19 +3,24 @@ import icons from 'ultils/icon'
 import {apiGetProduct} from 'apis/product'
 import {renderStarfromNumber, formatPrice} from 'ultils/helper'
 import {Countdown} from '../index'
-import { min } from 'moment/moment'
+import moment, { min } from 'moment/moment'
+import { useSelector } from 'react-redux'
+import withBaseComponent from 'hocs/withBaseComponent'
+import { getDealDaily } from 'store/product/productSlice'
 const {FaStar, MdMenu} = icons
 let idInterval 
-const DealDaily = () => {
-    const [dealdaily, setDealdaily] = useState(null)
+const DealDaily = ({dispatch}) => {
     const [hour, setHour] = useState(0)
     const [minute, setMinute] = useState(0)
     const [second, setSecond] = useState(0)
     const [expire, setExpire] = useState(false)
+    const {dealDaily} = useSelector(s => s.product)
+
     const fetchDealDaily = async () => {
-        const response = await apiGetProduct({limit: 1, page:Math.round(Math.random()*10), totalRatings:5})
+        const response = await apiGetProduct({sort: '-totalRatings', limit:10})
         if(response.success){
-            setDealdaily(response.products[0])
+            const pr = response.products[Math.round(Math.random()*10)]
+            dispatch(getDealDaily({data:pr, time: Date.now() + 24*60*60*1000}))
             const h = 23 - new Date().getHours()
             const m = 60 - new Date().getMinutes()
             const s = 60 - new Date().getSeconds()
@@ -37,10 +42,23 @@ const DealDaily = () => {
     // },[])
     useEffect(() => {
         idInterval && clearInterval(idInterval)
-        fetchDealDaily()
+        if(moment(moment(dealDaily?.time).format('MM/DD/YYYY')).isBefore(moment())){
+            fetchDealDaily()
+        }
     }, [expire])
+
+    useEffect(() => {
+        if(dealDaily?.time){
+            const distanceTime = dealDaily?.time - Date.now()
+            setHour(Math.floor(distanceTime / (3600*1000)))
+            setMinute(Math.floor((distanceTime / 1000) % 3600 / 60))
+            setSecond(Math.floor((distanceTime / 1000) % 3600 % 60))
+        }
+    }, [dealDaily])
+    
     
     useEffect(()=>{
+        console.log('checkkkk')
         idInterval = setInterval(() => {
             if(second > 0){setSecond(prev => prev -1)}
             else{
@@ -73,13 +91,13 @@ const DealDaily = () => {
             <span className='flex-3'></span>
         </div>
         <div className='w-full flex flex-col items-center pt-8 px-4 gap-2'>
-        <img src={dealdaily?.thumb||'https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png'} 
+        <img src={dealDaily?.data?.thumb||'https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png'} 
           className='w-full object-contain' alt=''/>
-          <span className='line-clamp-1 text-center'>{dealdaily?.title}</span>
-          <span className='flex h-4'>{renderStarfromNumber(dealdaily?.totalRatings, 20)?.map((el, index)=>(
+          <span className='line-clamp-1 text-center'>{dealDaily?.data?.title}</span>
+          <span className='flex h-4'>{renderStarfromNumber(dealDaily?.data?.totalRatings, 20)?.map((el, index)=>(
             <span key={index}> {el} </span>
           ))}</span>
-          <span>{`${formatPrice(dealdaily?.price)} VND`}</span>
+          <span>{`${formatPrice(dealDaily?.data?.price)} VND`}</span>
         </div>
         <div className='px-4 mt-8'>
             <div className='flex justify-center gap-2 mb-4'>
@@ -99,4 +117,4 @@ const DealDaily = () => {
 
 }
 
-export default memo(DealDaily)
+export default withBaseComponent(memo(DealDaily))
